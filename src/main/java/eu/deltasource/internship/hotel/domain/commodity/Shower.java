@@ -5,13 +5,13 @@ package eu.deltasource.internship.hotel.domain.commodity;
  */
 public class Shower extends AbstractCommodity {
 
-    public Shower() {
-        super();
-    }
+	public Shower() {
+		super();
+	}
 
-    @Override
-    public void prepare() {
-        System.out.println("The shower is being cleaned!");
-    }
+	@Override
+	public void prepare() {
+		System.out.println("The shower is being cleaned!");
+	}
 
 }
