@@ -88,6 +88,15 @@ public class BookingService {
 		booking.setBookingDates(fromDate, toDate);
 	}
 
+	/**
+	 * Removes a booking with particular id
+	 *
+	 * @param id the id of the booking
+	 */
+	public void removeBookingById(int id) {
+		bookingRepository.deleteById(id);
+	}
+
 	private void validateBookingId(int bookingId) {
 		if (bookingId <= 0) {
 			throw new IllegalArgumentException("Booking id cannot be a negative number or zero.");
