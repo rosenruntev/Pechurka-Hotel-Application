@@ -11,9 +11,9 @@ public class GuestService {
 	private final GuestRepository guestRepository;
 
 	/**
-	 * Constructs a service with given guest repository
+	 * Constructs a guest service with given guest repository
 	 *
-	 * @param guestRepository repository with guests
+	 * @param guestRepository the guest repository
 	 */
 	public GuestService(GuestRepository guestRepository) {
 		this.guestRepository = guestRepository;
