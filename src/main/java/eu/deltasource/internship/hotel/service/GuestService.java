@@ -12,4 +12,5 @@ public class GuestService {
     public GuestService(GuestRepository guestRepository) {
         this.guestRepository = guestRepository;
     }
+
 }
