@@ -185,7 +185,7 @@ public class GuestServiceTest {
 		//when
 		guestService.createGuest(guestId, fName, lName, guestGender);
 		Guest newGuest = new Guest(newGuestId, updateFName, updateLName, newGuestGender);
-		guestService.updateGuest(newGuest);
+		guestService.updateGuest(guestId,fName,lName,guestGender);
 
 		//then
 		assert (newGuest.equals(guestService.getGuestById(newGuestId)));
@@ -199,7 +199,7 @@ public class GuestServiceTest {
 		//when
 		guestService.createGuest(guestId, fName, lName, guestGender);
 		Guest newGuest = null;
-		guestService.updateGuest(null);
+		guestService.updateGuest(-1,fName,lName,guestGender);
 
 		//then
 		assert (newGuest.equals(guestService.getGuestById(newGuestId)));

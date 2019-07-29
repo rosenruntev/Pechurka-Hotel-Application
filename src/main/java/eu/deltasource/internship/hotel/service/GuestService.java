@@ -47,12 +47,15 @@ public class GuestService {
 	}
 
 	/**
-	 * Updates the data of a guest.
-	 *
-	 * @param guestItem Represents the guest data that we will utilize for the update.
-	 * @return Returns the updated guest.
+	 * Updates the information of an already existing guest object.
+	 * @param newGuestId Represents the new guest id.
+	 * @param newFirstName Represents the new  guest's first name.
+	 * @param newLastName Represents the new guest's last name.
+	 * @param newGender Represents the new guest's genger.
+	 * @return Returns the updated guest object.
 	 */
-	public Guest updateGuest(Guest guestItem) {
+	public Guest updateGuest(int newGuestId, String newFirstName, String newLastName, Gender newGender) {
+		Guest guestItem = new Guest(newGuestId, newFirstName, newLastName, newGender);
 		assertGuest(guestItem);
 		return guestRepository.updateGuest(guestItem);
 	}
