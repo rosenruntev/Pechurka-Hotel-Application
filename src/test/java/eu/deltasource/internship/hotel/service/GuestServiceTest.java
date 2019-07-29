@@ -154,7 +154,7 @@ public class GuestServiceTest {
 	public void testRemoveGuestById_failScenario_1() {
 		//given
 
-		int invalidId = guestRepository.findAll().size()+2 ;
+		int invalidId = guestRepository.findAll().size() + 2;
 		//when
 
 		guestRepository.save(testGuest);
@@ -195,10 +195,10 @@ public class GuestServiceTest {
 	@Test(expected = ItemNotFoundException.class)
 	public void testUpdateGuest_failScenario() {
 		//given
-		int newGuestId = 1 ;
+		int newGuestId = 1;
 		//when
 		guestService.createGuest(guestId, fName, lName, guestGender);
-		Guest newGuest = null ;
+		Guest newGuest = null;
 		guestService.updateGuest(null);
 
 		//then
@@ -206,16 +206,16 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void testCreateGuest_successScenario(){
+	public void testCreateGuest_successScenario() {
 		//when
-		guestService.createGuest(guestId,fName,lName,guestGender);
+		guestService.createGuest(guestId, fName, lName, guestGender);
 		//then
-		assert(guestService.getGuestById(guestId).equals(testGuest));
+		assert (guestService.getGuestById(guestId).equals(testGuest));
 	}
 
 	@Test(expected = ItemNotFoundException.class)
-	public  void testCreateGuest_failScenario(){
-		guestService.createGuest(-1,fName,lName,guestGender);
+	public void testCreateGuest_failScenario() {
+		guestService.createGuest(-1, fName, lName, guestGender);
 	}
 
 }

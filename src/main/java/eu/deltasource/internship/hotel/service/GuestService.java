@@ -43,7 +43,7 @@ public class GuestService {
 		if (id < 0 || (!guestRepository.existsById(id))) {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
-		return  guestRepository.deleteById(id);
+		return guestRepository.deleteById(id);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class GuestService {
 	 * @param guestId   Represetns the guest's Id.
 	 * @param firstName The new guest's first name.
 	 * @param lastName  The new guest's last name
-	 * @param gender The new guest's gender.
+	 * @param gender    The new guest's gender.
 	 */
 	public void createGuest(int guestId, String firstName, String lastName, Gender gender) {
 		Guest newGuest = new Guest(guestId, firstName, lastName, gender);
