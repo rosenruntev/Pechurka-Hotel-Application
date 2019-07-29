@@ -98,6 +98,7 @@ public class GuestServiceTest {
 		Guest newGuest = new Guest(newGuestId, updateFName, updateLName, newGuestGender);
 		guestService.updateGuest(guestId, fName, lName, guestGender);
 		//then
+		//todo Make a new assert on a true scenario after taner's reply.
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.updateGuest(invalidId, updateFName, updateLName, guestGender);
 		});
