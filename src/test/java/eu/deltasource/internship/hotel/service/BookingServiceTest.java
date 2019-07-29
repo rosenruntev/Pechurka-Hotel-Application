@@ -3,26 +3,44 @@ package eu.deltasource.internship.hotel.service;
 import eu.deltasource.internship.hotel.repository.BookingRepository;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class BookingServiceTest {
 
-	@Test(expected = IllegalArgumentException.class)
+	private RoomRepository roomRepository;
+	private RoomService roomService;
+	private GuestRepository guestRepository;
+	private GuestService guestService;
+	private BookingRepository bookingRepository;
+	private BookingService bookingService;
+	private LocalDate bookingFromDate;
+	private LocalDate bookingToDate;
+
+	@BeforeEach
+	public void setUp() {
+		roomRepository = new RoomRepository();
+		roomService = new RoomService(roomRepository);
+
+		guestRepository = new GuestRepository();
+		guestService = new GuestService(guestRepository);
+
+		bookingRepository = new BookingRepository();
+		bookingService = new BookingService(bookingRepository, roomService, guestService);
+
+		bookingFromDate = LocalDate.of(2019, 7, 20);
+		bookingToDate = LocalDate.of(2019, 7, 25);
+	}
+
+	@Test
 	public void createBookingShouldThrowExceptionIfBookingIdIsNegative() {
-		GuestRepository guestRepository = new GuestRepository();
-		GuestService guestService = new GuestService(guestRepository);
-
-		RoomRepository roomRepository = new RoomRepository();
-		RoomService roomService = new RoomService(roomRepository);
-
-		BookingRepository bookingRepository = new BookingRepository();
-		BookingService bookingService = new BookingService(bookingRepository, roomService, guestService);
-
-		LocalDate fromDate = LocalDate.of(2019, 7, 20);
-		LocalDate toDate = LocalDate.of(2019, 7, 30);
-
-		bookingService.createBooking(-1, 1, 1, 1, fromDate, toDate);
+		assertThrows(IllegalArgumentException.class, () -> {
+			bookingService.createBooking(-1, 1, 1, 1,
+				bookingFromDate, bookingToDate);
+		});
 	}
 }
