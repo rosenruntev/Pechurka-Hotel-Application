@@ -59,10 +59,21 @@ public class BookingService {
 
 	/**
 	 * Returns all bookings in the repository as unmodifiable list
+	 *
 	 * @return all bookings in the repository as unmodifiable list
 	 */
 	public List<Booking> getAllBookings() {
 		return bookingRepository.findAll();
+	}
+
+	/**
+	 * Returns a booking with particular id
+	 *
+	 * @param id the id of the booking
+	 * @return a booking with particular id
+	 */
+	public Booking getBookingById(int id) {
+		return bookingRepository.findById(id);
 	}
 
 	private void validateBookingId(int bookingId) {
