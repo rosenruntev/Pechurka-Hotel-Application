@@ -76,6 +76,18 @@ public class BookingService {
 		return bookingRepository.findById(id);
 	}
 
+	/**
+	 * Updates dates of booking with particular id
+	 *
+	 * @param id       the id of the booking
+	 * @param fromDate the date of accommodation
+	 * @param toDate   the date of leaving
+	 */
+	public void updateBookingDatesById(int id, LocalDate fromDate, LocalDate toDate) {
+		Booking booking = getBookingById(id);
+		booking.setBookingDates(fromDate, toDate);
+	}
+
 	private void validateBookingId(int bookingId) {
 		if (bookingId <= 0) {
 			throw new IllegalArgumentException("Booking id cannot be a negative number or zero.");
