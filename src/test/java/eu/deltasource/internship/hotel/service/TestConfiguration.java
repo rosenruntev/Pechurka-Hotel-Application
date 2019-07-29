@@ -1,5 +1,5 @@
 package eu.deltasource.internship.hotel.service;
-
+/*
 import eu.deltasource.internship.hotel.domain.Hotel;
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.*;
@@ -18,6 +18,7 @@ import static eu.deltasource.internship.hotel.domain.commodity.BedType.SINGLE;
  * This test class has a ready initialization for the rooms of the hotel,
  * which you can use for testing! Add more when needed.
  */
+/*
 public class TestConfiguration {
 
 	@Before
@@ -74,3 +75,4 @@ public class TestConfiguration {
 
 	}
 }
+*/

@@ -10,6 +10,10 @@ import java.util.List;
 /**
  * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
  */
+
+/**
+ * GuestService
+ */
 public class GuestService {
 
 	private final GuestRepository guestRepository;
@@ -48,10 +52,11 @@ public class GuestService {
 
 	/**
 	 * Updates the information of an already existing guest object.
-	 * @param newGuestId Represents the new guest id.
+	 *
+	 * @param newGuestId   Represents the new guest id.
 	 * @param newFirstName Represents the new  guest's first name.
-	 * @param newLastName Represents the new guest's last name.
-	 * @param newGender Represents the new guest's genger.
+	 * @param newLastName  Represents the new guest's last name.
+	 * @param newGender    Represents the new guest's genger.
 	 * @return Returns the updated guest object.
 	 */
 	public Guest updateGuest(int newGuestId, String newFirstName, String newLastName, Gender newGender) {
