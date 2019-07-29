@@ -12,6 +12,7 @@ public class GuestService {
 
 	/**
 	 * Constructs a service with given guest repository
+	 *
 	 * @param guestRepository repository with guests
 	 */
 	public GuestService(GuestRepository guestRepository) {
@@ -20,6 +21,7 @@ public class GuestService {
 
 	/**
 	 * Returns the guest with particular id
+	 *
 	 * @param id the id of the guest
 	 * @return the guest with particular id
 	 */
