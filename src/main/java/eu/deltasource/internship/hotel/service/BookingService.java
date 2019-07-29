@@ -57,6 +57,14 @@ public class BookingService {
 		}
 	}
 
+	/**
+	 * Returns all bookings in the repository as unmodifiable list
+	 * @return all bookings in the repository as unmodifiable list
+	 */
+	public List<Booking> getAllBookings() {
+		return bookingRepository.findAll();
+	}
+
 	private void validateBookingId(int bookingId) {
 		if (bookingId <= 0) {
 			throw new IllegalArgumentException("Booking id cannot be a negative number or zero.");
