@@ -5,10 +5,10 @@ package eu.deltasource.internship.hotel;
  */
 public class HotelApplication {
 
-    /**
-     * #thisisamain
-     */
-    public static void main(String[] args) {
+	/**
+	 * #thisisamain
+	 */
+	public static void main(String[] args) {
 
-    }
+	}
 }
