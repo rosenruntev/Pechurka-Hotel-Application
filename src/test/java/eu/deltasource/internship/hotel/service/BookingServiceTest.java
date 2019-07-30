@@ -189,6 +189,16 @@ public class BookingServiceTest {
 	}
 
 	@Test
+	public void updateBookingDatesByIdShouldChangeBookingDates() {
+		bookingRepository.save(new Booking(1, 1, 1, 1,
+			bookingFromDate, bookingToDate));
+		bookingService.updateBookingDatesById(1, bookingFromDate.plusDays(1), bookingToDate.plusDays(1));
+
+		assertEquals(bookingFromDate.plusDays(1), bookingService.getBookingById(1).getFrom());
+		assertEquals(bookingToDate.plusDays(1), bookingService.getBookingById(1).getTo());
+	}
+
+	@Test
 	public void removeBookingByIdShouldRemoveTheBooking() {
 		bookingRepository.save(new Booking(1, 1, 1, 1,
 			bookingFromDate, bookingToDate));
