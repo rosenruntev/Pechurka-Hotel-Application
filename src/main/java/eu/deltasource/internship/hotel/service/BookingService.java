@@ -85,7 +85,9 @@ public class BookingService {
 	 */
 	public void updateBookingDatesById(int id, LocalDate fromDate, LocalDate toDate) {
 		Booking booking = getBookingById(id);
-		booking.setBookingDates(fromDate, toDate);
+		Booking bookingWithChangedDates = new Booking(id, booking.getGuestId(),
+			booking.getRoomId(), booking.getNumberOfPeople(), fromDate, toDate);
+		bookingRepository.updateDates(bookingWithChangedDates);
 	}
 
 	/**
