@@ -53,9 +53,9 @@ public class GuestServiceTest {
 		guestId = guestRepository.findAll().get(0).getGuestId();
 		expectedGuest = guestRepository.findById(guestId);
 		//then
-		assert (!guestRepository.findAll().isEmpty());
-		assert (guestId == 1);
-		assert (expectedGuest != null);
+		assertFalse(guestRepository.findAll().isEmpty());
+		assertEquals(1, guestId);
+		assertEquals(testGuest, expectedGuest);
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.getGuestById(invalidId);
 		});
@@ -114,8 +114,8 @@ public class GuestServiceTest {
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.createGuest(-1, fName, lName, guestGender);
 		});
-		assertThrows(FailedInitializationException.class,()->{
-		final Guest	failedInitializationGuest = new Guest(1,null,null,Gender.MALE);
+		assertThrows(FailedInitializationException.class, () -> {
+			final Guest failedInitializationGuest = new Guest(1, null, null, Gender.MALE);
 		});
 	}
 

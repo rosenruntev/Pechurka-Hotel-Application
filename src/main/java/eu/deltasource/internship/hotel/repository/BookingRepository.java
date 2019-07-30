@@ -2,6 +2,7 @@ package eu.deltasource.internship.hotel.repository;
 
 import eu.deltasource.internship.hotel.domain.Booking;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
  */
+@Repository
 public class BookingRepository {
 
 	private final List<Booking> repository;
