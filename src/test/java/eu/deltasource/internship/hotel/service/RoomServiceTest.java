@@ -129,7 +129,7 @@ class RoomServiceTest {
 	@Test
 	void updateRoom() {
 		//given
-		Room testRoom = new Room(roomService.getRoomById(1).getRoomId(),singleSet);
+		Room testRoom = new Room(roomService.getRoomById(1).getRoomId(), singleSet);
 		//when
 		roomService.updateRoom(testRoom);
 		//then
