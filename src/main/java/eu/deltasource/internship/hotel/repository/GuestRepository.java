@@ -141,6 +141,10 @@ public class GuestRepository {
 	}
 
 	private int idGenerator() {
+		if (count() == 0) {
+			return count() + 1;
+		}
+
 		return repository.get(count()).getGuestId() + 1;
 	}
 }

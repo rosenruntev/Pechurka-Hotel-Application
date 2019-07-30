@@ -142,6 +142,10 @@ public class BookingRepository {
 	}
 
 	private int idGenerator() {
+		if (count() == 0) {
+			return count() + 1;
+		}
+
 		return repository.get(count()).getBookingId() + 1;
 	}
 }
