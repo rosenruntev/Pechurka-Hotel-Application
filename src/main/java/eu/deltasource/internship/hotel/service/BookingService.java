@@ -77,6 +77,7 @@ public class BookingService {
 	 * @return a booking with particular id
 	 */
 	public Booking getBookingById(int id) {
+		validateBookingId(id);
 		return bookingRepository.findById(id);
 	}
 
@@ -88,6 +89,8 @@ public class BookingService {
 	 * @param toDate   the date of leaving
 	 */
 	public void updateBookingDatesById(int id, LocalDate fromDate, LocalDate toDate) {
+		validateBookingId(id);
+		validateDates(fromDate, toDate);
 		Booking booking = getBookingById(id);
 		Booking bookingWithChangedDates = new Booking(id, booking.getGuestId(),
 			booking.getRoomId(), booking.getNumberOfPeople(), fromDate, toDate);
@@ -100,6 +103,7 @@ public class BookingService {
 	 * @param id the id of the booking
 	 */
 	public void removeBookingById(int id) {
+		validateBookingId(id);
 		bookingRepository.deleteById(id);
 	}
 
