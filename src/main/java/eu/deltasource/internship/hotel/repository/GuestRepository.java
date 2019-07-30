@@ -62,6 +62,7 @@ public class GuestRepository {
 
 	/**
 	 * Generates IDs for the guests.
+	 *
 	 * @return Returns the newly generated ID.
 	 */
 	private int idGenerator() {
@@ -153,4 +154,5 @@ public class GuestRepository {
 	public int count() {
 		return repository.size();
 	}
+
 }

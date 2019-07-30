@@ -62,6 +62,7 @@ public class RoomRepository {
 
 	/**
 	 * Generates IDs for the rooms.
+	 *
 	 * @return Returns the newly generated ID.
 	 */
 	private int idGenerator() {

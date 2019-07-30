@@ -60,6 +60,7 @@ public class BookingRepository {
 
 	/**
 	 * Generates IDs for the bookings.
+	 *
 	 * @return Returns the newly generated id.
 	 */
 	private int idGenerator() {
