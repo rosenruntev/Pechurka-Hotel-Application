@@ -2,12 +2,12 @@ package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
-
 import java.util.List;
 
 /**
  * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
  */
+
 public class RoomService {
 
 	private final RoomRepository roomRepository;
@@ -49,7 +49,7 @@ public class RoomService {
 
 	/**
 	 * Adds a number of rooms to the repository.
-	 * @param rooms Room to be added.
+	 * @param rooms Room/s to be added.
 	 */
 	public void saveRooms(Room... rooms) {
 		roomRepository.saveAll(rooms);
