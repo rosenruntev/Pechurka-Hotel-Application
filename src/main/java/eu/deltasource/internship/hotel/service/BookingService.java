@@ -107,6 +107,16 @@ public class BookingService {
 		bookingRepository.deleteById(id);
 	}
 
+	/**
+	 * Checks if booking with particular id exists
+	 * @param id the id of the booking
+	 * @return true if the booking with particular id exists otherwise false
+	 */
+	public boolean existsById(int id) {
+		validateBookingId(id);
+		return bookingRepository.existsById(id);
+	}
+
 	private void validateBookingId(int bookingId) {
 		if (bookingId <= 0) {
 			throw new IllegalArgumentException("Booking id cannot be a negative number or zero.");
