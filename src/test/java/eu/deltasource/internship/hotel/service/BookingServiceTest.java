@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -167,5 +168,33 @@ public class BookingServiceTest {
 			bookingFromDate, bookingToDate);
 
 		assertEquals(true, bookingRepository.existsById(1));
+	}
+
+	@Test
+	public void getAllBookingsShouldReturnListWithAllBookings() {
+		bookingRepository.save(new Booking(1, 1, 1, 1,
+			bookingFromDate, bookingToDate));
+		List<Booking> bookings = bookingService.getAllBookings();
+
+		assertEquals(1, bookings.size());
+	}
+
+	@Test
+	public void getBookingByIdShouldReturnTheBookingWithParticularId() {
+		bookingRepository.save(new Booking(1, 1, 1, 1,
+			bookingFromDate, bookingToDate));
+		Booking booking = bookingRepository.findById(1);
+
+		assertEquals(1, booking.getBookingId());
+	}
+
+	@Test
+	public void removeBookingByIdShouldRemoveTheBooking() {
+		bookingRepository.save(new Booking(1, 1, 1, 1,
+			bookingFromDate, bookingToDate));
+
+		bookingService.removeBookingById(1);
+
+		assertEquals(0, bookingRepository.count());
 	}
 }
