@@ -2,12 +2,14 @@ package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 /**
  * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
  */
-
+@Service
 public class RoomService {
 
 	private final RoomRepository roomRepository;
