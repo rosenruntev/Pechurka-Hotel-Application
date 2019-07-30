@@ -58,11 +58,22 @@ public class RoomRepository {
 	}
 
 	/**
+	 * Generates IDs for the rooms.
+	 * @return Returns the newly generated ID.
+	 */
+	private int idGenerator() {
+		if (count() == 0) {
+			return count() + 1;
+		}
+		return repository.get(count() - 1).getRoomId() + 1;
+	}
+
+	/**
 	 * Saves the item in the repository with a new id
 	 * using the item count in the repository
 	 */
 	public void save(Room item) {
-		Room newRoom = new Room(count() + 1, item.getCommodities());
+		Room newRoom = new Room(idGenerator(), item.getCommodities());
 		repository.add(newRoom);
 	}
 
@@ -88,9 +99,14 @@ public class RoomRepository {
 	 * Returns a copy of the updated item
 	 */
 	public Room updateRoom(Room item) {
-		Room updatedRoom = findById(item.getRoomId());
-		updatedRoom.updateCommodities(item.getCommodities());
-		return new Room(updatedRoom);
+		for (Room room : repository) {
+			if (room.getRoomId() == item.getRoomId()) {
+				room.updateCommodities(item.getCommodities());
+				return new Room(room);
+			}
+		}
+
+		throw new ItemNotFoundException("Room not found in repository!");
 	}
 
 	/**
@@ -112,8 +128,12 @@ public class RoomRepository {
 	 * returns false if there's no match and the list is unchanged.
 	 */
 	public boolean deleteById(int id) {
-		Room item = findById(id);
-		return delete(item);
+		for (Room room : repository) {
+			if (room.getRoomId() == id) {
+				return delete(room);
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -88,7 +88,6 @@ public class GuestServiceTest {
 	@Test
 	public void testUpdateGuest() {
 		//given
-
 		String updateFName = "newGuestFName";
 		String updateLName = "newGuestLName";
 		int newGuestId = 1;
@@ -99,7 +98,7 @@ public class GuestServiceTest {
 		Guest newGuest = new Guest(newGuestId, updateFName, updateLName, newGuestGender);
 		guestService.updateGuest(guestId, fName, lName, guestGender);
 		//then
-		//todo Make a new assert on a true scenario after taner's reply.
+		assertEquals(guestService.getGuestById(newGuestId), newGuest);
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.updateGuest(invalidId, updateFName, updateLName, guestGender);
 		});

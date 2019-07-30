@@ -57,11 +57,22 @@ public class BookingRepository {
 	}
 
 	/**
+	 * Generates IDs for the bookings.
+	 * @return Returns the newly generated id.
+	 */
+	private int idGenerator() {
+		if (count() == 0) {
+			return count() + 1;
+		}
+		return repository.get(count()).getBookingId() + 1;
+	}
+
+	/**
 	 * Saves the item in the repository with a new id
 	 * using the item count in the repository
 	 */
 	public void save(Booking item) {
-		Booking newBooking = new Booking(count() + 1, item.getGuestId(), item.getRoomId(),
+		Booking newBooking = new Booking(idGenerator(), item.getGuestId(), item.getRoomId(),
 			item.getNumberOfPeople(), item.getFrom(), item.getTo());
 		repository.add(newBooking);
 	}
@@ -91,9 +102,13 @@ public class BookingRepository {
 	 * All validations should be done in the service layer!!!
 	 */
 	public Booking updateDates(Booking item) {
-		Booking updatedBooking = findById(item.getBookingId());
-		updatedBooking.setBookingDates(item.getFrom(), item.getTo());
-		return updatedBooking;
+		for(Booking booking : repository) {
+			if (booking.getBookingId() == item.getBookingId()) {
+				booking.setBookingDates(item.getFrom(), item.getTo());
+				return new Booking(booking);
+			}
+		}
+		throw new ItemNotFoundException("Booking not found in repository!");
 	}
 
 	/**
@@ -115,8 +130,12 @@ public class BookingRepository {
 	 * returns false if there's no match and the list is unchanged.
 	 */
 	public boolean deleteById(int id) {
-		Booking item = findById(id);
-		return delete(item);
+		for (Booking booking : repository) {
+			if (booking.getGuestId() == id) {
+				return delete(booking);
+			}
+		}
+		return false;
 	}
 
 	/**
