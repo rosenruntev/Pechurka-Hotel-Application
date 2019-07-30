@@ -58,7 +58,7 @@ class RoomServiceTest {
 
 		// Initialize Services
 		roomService = new RoomService(roomRepository);
-		// Comodities for a double room
+		// Commodities for a double room
 		doubleBed = new Bed(BedType.DOUBLE);
 		toilet = new Toilet();
 		shower = new Shower();
@@ -128,7 +128,13 @@ class RoomServiceTest {
 
 	@Test
 	void updateRoom() {
-		//	roomService.updateRoom()
+		//given
+		Room testRoom = new Room(roomService.getRoomById(1).getRoomId(),singleSet);
+		//when
+		roomService.updateRoom(testRoom);
+		//then
+		assertEquals(testRoom.getRoomCapacity(), roomService.getRoomById(1).getRoomCapacity());
+
 	}
 }
 
