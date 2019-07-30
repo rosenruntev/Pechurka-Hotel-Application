@@ -43,6 +43,10 @@ public class BookingService {
 	 */
 	public void createBooking(int bookingId, int guestId, int roomId, int numberOfPeople, LocalDate fromDate, LocalDate toDate) {
 		validateBookingId(bookingId);
+		if (bookingRepository.existsById(bookingId)) {
+			throw new IllegalArgumentException("Booking with id " + bookingId + " already exists.");
+		}
+
 		guestService.getGuestById(guestId);
 		Room room = roomService.getRoomById(roomId);
 		if (room.getRoomCapacity() != numberOfPeople) {
@@ -102,8 +106,6 @@ public class BookingService {
 	private void validateBookingId(int bookingId) {
 		if (bookingId <= 0) {
 			throw new IllegalArgumentException("Booking id cannot be a negative number or zero.");
-		} else if (bookingRepository.existsById(bookingId)) {
-			throw new IllegalArgumentException("Booking with id " + bookingId + " already exists.");
 		}
 	}
 
