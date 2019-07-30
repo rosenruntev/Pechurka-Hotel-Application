@@ -104,7 +104,8 @@ public class BookingRepository {
 	 * All validations should be done in the service layer!!!
 	 */
 	public Booking updateDates(Booking item) {
-		for(Booking booking : repository) {
+
+		for (Booking booking : repository) {
 			if (booking.getBookingId() == item.getBookingId()) {
 				booking.setBookingDates(item.getFrom(), item.getTo());
 				return new Booking(booking);

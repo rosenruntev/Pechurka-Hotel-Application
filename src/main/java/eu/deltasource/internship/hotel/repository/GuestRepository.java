@@ -62,7 +62,6 @@ public class GuestRepository {
 
 	/**
 	 * Generates IDs for the guests.
-	 *
 	 * @return Returns the newly generated ID.
 	 */
 	private int idGenerator() {
