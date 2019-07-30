@@ -91,6 +91,10 @@ public class BookingService {
 	public void updateBookingDatesById(int id, LocalDate fromDate, LocalDate toDate) {
 		validateBookingId(id);
 		validateDates(fromDate, toDate);
+		if (isRoomBookedForPeriod(id, fromDate, toDate)) {
+			throw new IllegalArgumentException("Room is already booked for that period.");
+		}
+
 		Booking booking = getBookingById(id);
 		Booking bookingWithChangedDates = new Booking(id, booking.getGuestId(),
 			booking.getRoomId(), booking.getNumberOfPeople(), fromDate, toDate);
