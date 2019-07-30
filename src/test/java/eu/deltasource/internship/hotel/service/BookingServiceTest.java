@@ -49,7 +49,9 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfBookingIdIsNegative() {
+		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
+			// When
 			bookingService.createBooking(-1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -57,11 +59,14 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfBookingIdAlreadyExists() {
+		// Given
 		Booking booking = new Booking(1, 1, 1, 1,
 			bookingFromDate, bookingToDate);
 		bookingRepository.save(booking);
 
+		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
+			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -69,7 +74,9 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfGuestDoesNotExist() {
+		// Then
 		assertThrows(ItemNotFoundException.class, () -> {
+			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -77,10 +84,13 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfRoomDoesNotExist() {
+		// Given
 		Guest guest = new Guest(1, "first name", "last name", Gender.MALE);
 		guestRepository.save(guest);
 
+		// Then
 		assertThrows(ItemNotFoundException.class, () -> {
+			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -88,6 +98,7 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfRoomHasDifferentCapacity() {
+		// Given
 		Guest guest = new Guest(1, "first name", "last name", Gender.MALE);
 		guestRepository.save(guest);
 
@@ -96,7 +107,9 @@ public class BookingServiceTest {
 		Room room = new Room(1, commodities);
 		roomService.saveRoom(room);
 
+		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
+			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -104,6 +117,7 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfDatesAreEqual() {
+		// Given
 		Guest guest = new Guest(1, "first name", "last name", Gender.MALE);
 		guestRepository.save(guest);
 
@@ -112,7 +126,9 @@ public class BookingServiceTest {
 		Room room = new Room(1, commodities);
 		roomService.saveRoom(room);
 
+		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
+			// When
 			bookingService.createBooking(1, 1, 1, 2,
 				LocalDate.now(), LocalDate.now());
 		});
@@ -120,6 +136,7 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfFromDateIsAfterToDate() {
+		// Given
 		Guest guest = new Guest(1, "first name", "last name", Gender.MALE);
 		guestRepository.save(guest);
 
@@ -128,7 +145,9 @@ public class BookingServiceTest {
 		Room room = new Room(1, commodities);
 		roomService.saveRoom(room);
 
+		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
+			// When
 			bookingService.createBooking(1, 1, 1, 2,
 				LocalDate.now().plusDays(1), LocalDate.now());
 		});
@@ -136,6 +155,7 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfRoomIsBookedForThatPeriod() {
+		// Given
 		Guest guest = new Guest(1, "first name", "last name", Gender.MALE);
 		guestRepository.save(guest);
 
@@ -148,7 +168,9 @@ public class BookingServiceTest {
 			bookingFromDate, bookingToDate);
 		bookingRepository.save(booking);
 
+		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
+			// When
 			bookingService.createBooking(2, 1, 1, 2,
 				bookingFromDate, bookingToDate);
 		});
@@ -156,6 +178,7 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldCreateNewBookingInBookingRepository() {
+		// Given
 		Guest guest = new Guest(1, "first name", "last name", Gender.MALE);
 		guestRepository.save(guest);
 
@@ -164,47 +187,64 @@ public class BookingServiceTest {
 		Room room = new Room(1, commodities);
 		roomService.saveRoom(room);
 
+		// When
 		bookingService.createBooking(1, 1, 1, 2,
 			bookingFromDate, bookingToDate);
 
+		// Then
 		assertEquals(true, bookingRepository.existsById(1));
 	}
 
 	@Test
 	public void getAllBookingsShouldReturnListWithAllBookings() {
+		// Given
 		bookingRepository.save(new Booking(1, 1, 1, 1,
 			bookingFromDate, bookingToDate));
+
+		// When
 		List<Booking> bookings = bookingService.getAllBookings();
 
+		// Then
 		assertEquals(1, bookings.size());
 	}
 
 	@Test
 	public void getBookingByIdShouldReturnTheBookingWithParticularId() {
+		// Given
 		bookingRepository.save(new Booking(1, 1, 1, 1,
 			bookingFromDate, bookingToDate));
+
+		// When
 		Booking booking = bookingRepository.findById(1);
 
+		// Then
 		assertEquals(1, booking.getBookingId());
 	}
 
 	@Test
 	public void updateBookingDatesByIdShouldChangeBookingDates() {
+		// Given
 		bookingRepository.save(new Booking(1, 1, 1, 1,
 			bookingFromDate, bookingToDate));
+
+		// When
 		bookingService.updateBookingDatesById(1, bookingFromDate.plusDays(1), bookingToDate.plusDays(1));
 
+		// Then
 		assertEquals(bookingFromDate.plusDays(1), bookingService.getBookingById(1).getFrom());
 		assertEquals(bookingToDate.plusDays(1), bookingService.getBookingById(1).getTo());
 	}
 
 	@Test
 	public void removeBookingByIdShouldRemoveTheBooking() {
+		// Given
 		bookingRepository.save(new Booking(1, 1, 1, 1,
 			bookingFromDate, bookingToDate));
 
+		// When
 		bookingService.removeBookingById(1);
 
+		// Then
 		assertEquals(0, bookingRepository.count());
 	}
 }
