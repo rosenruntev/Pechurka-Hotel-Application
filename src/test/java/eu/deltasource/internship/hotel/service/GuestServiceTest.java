@@ -2,6 +2,7 @@ package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Gender;
 import eu.deltasource.internship.hotel.domain.Guest;
+import eu.deltasource.internship.hotel.exception.FailedInitializationException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,8 +73,8 @@ public class GuestServiceTest {
 		//when
 		guestRepository.saveAll(testGuest);
 		guestId = guestRepository.findAll().get(0).getGuestId();
-		guestRepository.deleteById(guestId);
 		//then
+		assertTrue(guestRepository.deleteById(guestId));
 		assert (guestRepository.findAll().isEmpty());
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.removeGuestById(invalidId);
@@ -87,7 +88,6 @@ public class GuestServiceTest {
 	@Test
 	public void testUpdateGuest() {
 		//given
-
 		String updateFName = "newGuestFName";
 		String updateLName = "newGuestLName";
 		int newGuestId = 1;
@@ -97,9 +97,8 @@ public class GuestServiceTest {
 		guestService.createGuest(guestId, fName, lName, guestGender);
 		Guest newGuest = new Guest(newGuestId, updateFName, updateLName, newGuestGender);
 		guestService.updateGuest(guestId, fName, lName, guestGender);
-
 		//then
-		assert (newGuest.equals(guestService.getGuestById(newGuestId)));
+		assertEquals(guestService.getGuestById(newGuestId), newGuest);
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.updateGuest(invalidId, updateFName, updateLName, guestGender);
 		});
@@ -107,12 +106,16 @@ public class GuestServiceTest {
 
 	@Test
 	public void testCreateGuest() {
+
 		//when
 		guestService.createGuest(guestId, fName, lName, guestGender);
 		//then
 		assert (guestService.getGuestById(guestId).equals(testGuest));
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.createGuest(-1, fName, lName, guestGender);
+		});
+		assertThrows(FailedInitializationException.class,()->{
+		final Guest	failedInitializationGuest = new Guest(1,null,null,Gender.MALE);
 		});
 	}
 

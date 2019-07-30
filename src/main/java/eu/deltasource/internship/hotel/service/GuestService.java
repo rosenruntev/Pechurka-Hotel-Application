@@ -30,7 +30,7 @@ public class GuestService {
 	 * @return Returns the sought after guest.
 	 */
 	public Guest getGuestById(int id) {
-		if (id < 0 || id > guestRepository.findAll().size()) {
+		if (id < 0) {
 			throw new ItemNotFoundException("No such guest!");
 		}
 		return this.guestRepository.findById(id);
@@ -86,7 +86,6 @@ public class GuestService {
 		return this.guestRepository.findAll();
 	}
 
-
 	/**
 	 * Asserts whether the data inside the specified guest is valid.
 	 * If the object has null value or the id is negativa
@@ -95,10 +94,7 @@ public class GuestService {
 	 * @return Returns a boolean answer based on the assertion's outcome.
 	 */
 	private boolean assertGuest(Guest item) {
-		if (item == null
-			|| item.getGuestId() < 0
-			|| item.getFirstName().isEmpty()
-			|| item.getLastName().isEmpty()) {
+		if (item == null || item.getGuestId() < 0) {
 			throw new ItemNotFoundException("guestItem is invalid");
 		}
 		return true;
