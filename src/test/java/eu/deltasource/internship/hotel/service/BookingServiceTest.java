@@ -254,11 +254,13 @@ public class BookingServiceTest {
 			bookingFromDate, bookingToDate);
 
 		// When
-		bookingService.updateBookingDatesById(1, bookingFromDate.plusDays(1), bookingToDate.plusDays(1));
+		LocalDate newFromDate = bookingFromDate.plusDays(20);
+		LocalDate newToDate = bookingToDate.plusDays(20);
+		bookingService.updateBookingDatesById(1, newFromDate, newToDate);
 
 		// Then
-		assertEquals(bookingFromDate.plusDays(1), bookingService.getBookingById(1).getFrom());
-		assertEquals(bookingToDate.plusDays(1), bookingService.getBookingById(1).getTo());
+		assertEquals(newFromDate, bookingService.getBookingById(1).getFrom());
+		assertEquals(newToDate, bookingService.getBookingById(1).getTo());
 	}
 
 	@Test
