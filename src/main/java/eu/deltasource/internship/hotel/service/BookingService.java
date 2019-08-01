@@ -139,7 +139,7 @@ public class BookingService {
 		List<Booking> bookings = bookingRepository.findAll();
 		for (Booking booking : bookings) {
 			if (booking.getRoomId() == roomId) {
-				if (booking.getTo().isAfter(fromDate) || booking.getFrom().isBefore(toDate)) {
+				if (!(booking.getTo().isBefore(fromDate) || booking.getFrom().isAfter(toDate))) {
 					return true;
 				}
 			}
