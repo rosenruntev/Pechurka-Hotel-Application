@@ -184,11 +184,16 @@ public class BookingService {
 		return false;
 	}
 
-	private boolean areDatesOverlapping(LocalDate firstFromDate, LocalDate firstToDate,
-										LocalDate secondFromDate, LocalDate secondToDate) {
-		boolean isFirstDateLeavingBeforeSecondDateAccommodation = firstToDate.isBefore(secondFromDate);
-		boolean isFirstDateAccommodationAfterSecondDateLeaving = firstFromDate.isAfter(secondToDate);
-		boolean areDatesOverlapping = !(isFirstDateLeavingBeforeSecondDateAccommodation || isFirstDateAccommodationAfterSecondDateLeaving);
-		return areDatesOverlapping;
+	/**
+	 * This method checks if booking accommodation OR leaving date is between requested dates. If booking accommodation OR
+	 * leaving is between requested dates then dates are overlapping and returns true otherwise dates are not overlapping and returns false.
+	 */
+	private boolean areDatesOverlapping(LocalDate bookingFromDate, LocalDate bookingToDate,
+										LocalDate requestedFromDate, LocalDate requestedToDate) {
+		boolean isBookingLeavingDateBeforeRequestedAccommodation = bookingToDate.isBefore(requestedFromDate);
+		boolean isBookingAccommodationDateAfterRequestedLeaving = bookingFromDate.isAfter(requestedToDate);
+		boolean areDateOverlapping = !(isBookingLeavingDateBeforeRequestedAccommodation ||
+			isBookingAccommodationDateAfterRequestedLeaving);
+		return areDateOverlapping;
 	}
 }
