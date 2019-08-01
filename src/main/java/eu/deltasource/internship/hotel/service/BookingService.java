@@ -100,7 +100,7 @@ public class BookingService {
 		// Check if we are trying to set dates that overlap with current booking dates
 		// if we have booking like 2019.8.1 - 2019.8.5 to be able to set dates like 2019.8.2 - 2019.8.4
 		// if they overlap, the booking dates will be changed otherwise isRoomBookedForPeriod will be called
-		if (booking.getTo().isBefore(fromDate) || booking.getFrom().isAfter(toDate)) {
+		if (!areDatesOverlapping(booking.getFrom(), booking.getTo(), fromDate, toDate)) {
 			if (isRoomBookedForPeriod(id, fromDate, toDate)) {
 				throw new IllegalArgumentException("Room is already booked for that period.");
 			}
@@ -175,10 +175,19 @@ public class BookingService {
 		List<Booking> bookings = bookingRepository.findAll();
 		for (Booking booking : bookings) {
 			if (booking.getRoomId() == roomId) {
-				if (!(booking.getTo().isBefore(fromDate) || booking.getFrom().isAfter(toDate))) {
+				if (areDatesOverlapping(booking.getFrom(), booking.getTo(), fromDate, toDate)) {
 					return true;
 				}
 			}
+		}
+
+		return false;
+	}
+
+	private boolean areDatesOverlapping(LocalDate firstFromDate, LocalDate firstToDate,
+										LocalDate secondFromDate, LocalDate secondToDate) {
+		if (!(firstToDate.isBefore(secondFromDate) || firstFromDate.isAfter(secondToDate))) {
+			return true;
 		}
 
 		return false;
