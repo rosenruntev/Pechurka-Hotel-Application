@@ -2,6 +2,7 @@ package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Gender;
 import eu.deltasource.internship.hotel.domain.Guest;
+import eu.deltasource.internship.hotel.exception.FailedInitializationException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import org.springframework.stereotype.Service;
@@ -93,7 +94,10 @@ public class GuestService {
 	 */
 	private boolean assertGuest(Guest item) {
 		if (item == null || item.getGuestId() < 0) {
-			throw new ItemNotFoundException("guestItem is invalid");
+			throw new ItemNotFoundException("guestItem is invalid !");
+		}
+		if(item.getFirstName().contains(" ") || item.getLastName().contains(" ")){
+			throw  new FailedInitializationException("Name contains forbidden symbols !");
 		}
 		return true;
 	}
@@ -107,8 +111,8 @@ public class GuestService {
 	 * @param guests Represents the guests to be created.
 	 */
 	public void createGuests(Guest... guests){
-		if(guests == null || guests.length == 0){
-			throw new ItemNotFoundException();
+		if(guests.length == 0){
+			throw new ItemNotFoundException("No Guests to be added !");
 		}
 		guestRepository.saveAll(guests);
 	}

@@ -47,7 +47,12 @@ class RoomServiceTest {
 	// commodities for a 4 person room with 2 doubles
 	private static final Set<AbstractCommodity> fivePersonSet = new HashSet<>(Arrays.asList(new Bed(BedType.KING_SIZE), new Bed(BedType.DOUBLE), new Bed(SINGLE), new Toilet(), new Toilet(), new Shower()));
 
-
+	/**
+	 * Creates an empty room repository .
+	 * In addition it creates  6 rooms : a double , a single , king size ,three people king size
+	 * ,four people room ,a 5 people room and adds them to the room repository.
+	 * Finally it adds the room repository to a room service.
+	 */
 	@BeforeEach
 	void setUp() {
 

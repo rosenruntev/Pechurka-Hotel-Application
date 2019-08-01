@@ -23,6 +23,11 @@ public class GuestServiceTest {
 	private int guestId;
 	private Guest testGuest;
 
+
+	/**
+	 * Creates an empty guest repository and adds it to a guest service.
+	 * In addition creates a single test guest with a test first/last name , with male gender and Id = 1.
+	 */
 	@BeforeEach
 	public void setUp() {
 
@@ -38,7 +43,6 @@ public class GuestServiceTest {
 		guestGender = Gender.MALE;
 		guestId = 1;
 		testGuest = new Guest(guestId, fName, lName, guestGender);
-
 	}
 
 	@Test
@@ -68,7 +72,6 @@ public class GuestServiceTest {
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.getGuestById(invalidId2);
 		});
-
 	}
 
 	@Test
@@ -110,25 +113,34 @@ public class GuestServiceTest {
 		//then
 		assertEquals(guestService.getGuestById(newGuestId), newGuest);
 	}
+
 	@Test
-	public  void updateGuestShouldThrowExceptionWhenThePassedGuestInformationIsInvalid(){
+	public void updateGuestShouldThrowExceptionWhenThePassedGuestInformationIsInvalid() {
 		//given
 		String updateFName = "newGuestFName";
 		String updateLName = "newGuestLName";
 		String invalidFName = null;
 		String invalidLName = "";
+		String invalidFName2 = " ";
+		String invalidLName2 = " ";
 		int invalidId = -1;
 		//when
 		guestService.createGuest(guestId, fName, lName, guestGender);
 		//then
-		assertThrows(FailedInitializationException.class,()->{
-			guestService.updateGuest(guestId,invalidFName,updateLName,guestGender);
+		assertThrows(FailedInitializationException.class, () -> {
+			guestService.updateGuest(guestId, invalidFName, updateLName, guestGender);
 		});
-		assertThrows(FailedInitializationException.class,()->{
-			guestService.updateGuest(guestId,updateFName,invalidLName,guestGender);
+		assertThrows(FailedInitializationException.class, () -> {
+			guestService.updateGuest(guestId, updateFName, invalidLName, guestGender);
 		});
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.updateGuest(invalidId, updateFName, updateLName, guestGender);
+		});
+		assertThrows(FailedInitializationException.class, () -> {
+			guestService.updateGuest(guestId, invalidFName2, updateLName, guestGender);
+		});
+		assertThrows(FailedInitializationException.class, () -> {
+			guestService.updateGuest(guestId, updateFName, invalidLName2, guestGender);
 		});
 	}
 
@@ -145,5 +157,32 @@ public class GuestServiceTest {
 			final Guest failedInitializationGuest = new Guest(1, null, null, Gender.MALE);
 		});
 	}
+
+	@Test
+	public void createGuestsShouldSaveANumberOfGuestsAtOnce() {
+		//given
+		Guest guest1 = new Guest(1, "Ivan", "Poparov", Gender.MALE);
+		Guest guest2 = new Guest(1, "Gogata", "Velev", Gender.MALE);
+		Guest guest3 = new Guest(1, "Nakata", "Alfa", Gender.MALE);
+		int expectedRepositorySize = 3;
+		//when
+		guestService.createGuests(guest1, guest2, guest3);
+		//then
+		assertEquals(expectedRepositorySize, guestService.getAllGuests().size());
+		assertTrue(guestService.getAllGuests().contains(guest1));
+		assertTrue(guestService.getAllGuests().contains(guest2));
+		assertTrue(guestService.getAllGuests().contains(guest3));
+	}
+
+	@Test
+	public void createGuestsShouldThrowExceptionWhenTryingToAddAnArrayOfGuestsWithLenghtZero() {
+		//given
+		Guest[] emptyArrayOfGuests = new Guest[0];
+		//when + then
+		assertThrows(ItemNotFoundException.class, () -> {
+			guestService.createGuests(emptyArrayOfGuests);
+		});
+	}
+
 
 }
