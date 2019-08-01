@@ -78,16 +78,22 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void getRoomById() {
+	void getRoomByIdShouldReturnTheRoomWithTheSpecifiedId() {
 		//then
 		assertEquals(roomService.getRoomById(doubleRoom.getRoomId()), doubleRoom);
+	}
+	@Test
+	void getRoomByIdShouldThrowExceptionWhenTheProvidedIndexIsOutOfBounds(){
+		//given
+		int idxOutOfBounds = 7 ;
+		//then
 		assertThrows(ItemNotFoundException.class, () -> {
-			roomService.getRoomById(7);
+			roomService.getRoomById(idxOutOfBounds);
 		});
 	}
 
 	@Test
-	void saveRoom() {
+	void saveRoomShouldReturnTheCurrentlyAddedRoom() {
 		//given
 		Room testRoom = new Room(1, singleSet);
 		Room expectedReturnValue;
@@ -112,22 +118,21 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void deleteRoom() {
+	void deleteRoomShouldReturnTrueWhenDeletionIsSuccessful() {
 		//then
 		assertTrue(roomService.deleteRoom(doubleRoom));
 		assertFalse(roomService.findRooms().contains(doubleRoom));
 	}
 
 	@Test
-	void deleteRoomById() {
-		//when
-		roomService.deleteRoomById(threePeopleKingSizeRoom.getRoomId());
+	void deleteRoomByIdShouldReturnTrueWhenDeletionIsSuccessful() {
 		//then
+		assertTrue(roomService.deleteRoomById(threePeopleKingSizeRoom.getRoomId()));
 		assertFalse(roomService.findRooms().contains(threePeopleKingSizeRoom));
 	}
 
 	@Test
-	void updateRoom() {
+	void updateRoomShouldMakeChangesToTheRoomWithTheSpecifiedRoomId() {
 		//given
 		Room testRoom = new Room(roomService.getRoomById(1).getRoomId(), singleSet);
 		//when
@@ -135,6 +140,21 @@ class RoomServiceTest {
 		//then
 		assertEquals(testRoom.getRoomCapacity(), roomService.getRoomById(1).getRoomCapacity());
 
+	}
+
+	@Test
+	void updateRoomShouldThrowExceptionWhenThePassedRoomObjectHasInvalidValues(){
+		//given
+		Room nullRoom = null ;
+		Room notPresentRoom = new Room(234,singleSet);
+		//then
+		assertThrows(ItemNotFoundException.class,()->{
+			roomService.updateRoom(nullRoom);
+		});
+
+		assertThrows(ItemNotFoundException.class,()->{
+			roomService.updateRoom(notPresentRoom);
+		});
 	}
 }
 

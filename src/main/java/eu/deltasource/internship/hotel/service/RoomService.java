@@ -1,6 +1,7 @@
 package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Room;
+import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,14 @@ public class RoomService {
 	 * @return Returns the sought after room.
 	 */
 	public Room getRoomById(int id) {
+		if(assertIdForTheSpecifiedRepository(id,roomRepository)){
+			throw new ItemNotFoundException("id has invalid value !");
+		}
 		return roomRepository.findById(id);
+	}
+
+	private boolean assertIdForTheSpecifiedRepository(int id, RoomRepository roomRepository) {
+		return !(id >= 0 && id <= roomRepository.findAll().size() && (roomRepository.existsById(id)));
 	}
 
 	/**
@@ -63,6 +71,9 @@ public class RoomService {
 	 * @return Returns boolean answer based on the outcome of the operation.
 	 */
 	public boolean deleteRoom(Room room) {
+		if(assertIdForTheSpecifiedRepository(room.getRoomId(),roomRepository)) {
+			throw new ItemNotFoundException("id has invalid value !");
+		}
 		return roomRepository.delete(room);
 	}
 
@@ -72,6 +83,9 @@ public class RoomService {
 	 * @return Returns boolean answer based on the outcome of the operation.
 	 */
 	public boolean deleteRoomById(int id) {
+		if(assertIdForTheSpecifiedRepository(id,roomRepository)){
+			throw new ItemNotFoundException("id has invalid value !");
+		}
 		return roomRepository.deleteById(id);
 	}
 
@@ -81,6 +95,9 @@ public class RoomService {
 	 * @return Returns a copy of the updated room.
 	 */
 	public Room updateRoom(Room room) {
+		if (room == null || assertIdForTheSpecifiedRepository(room.getRoomId(),roomRepository) ){
+			throw new ItemNotFoundException("room has invalid value !");
+		}
 		return roomRepository.updateRoom(room);
 	}
 }

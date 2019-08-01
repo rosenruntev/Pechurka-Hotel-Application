@@ -39,23 +39,29 @@ public class GuestServiceTest {
 		guestId = 1;
 		testGuest = new Guest(guestId, fName, lName, guestGender);
 
-
 	}
 
 	@Test
-	public void testGetGuestById() {
+	public void getGuestByIdShouldReturnTheGuestThatHasTheSpecifiedId() {
 		//given
-		int invalidId = -1;
-		int invalidId2 = guestRepository.findAll().size() + 2;
+
 		Guest expectedGuest;
 		//when
 		guestRepository.save(testGuest);
-		guestId = guestRepository.findAll().get(0).getGuestId();
-		expectedGuest = guestRepository.findById(guestId);
+		guestId = guestService.getAllGuests().get(0).getGuestId();
+		expectedGuest = guestService.getGuestById(guestId);
 		//then
-		assertFalse(guestRepository.findAll().isEmpty());
+		assertFalse(guestService.getAllGuests().isEmpty());
 		assertEquals(1, guestId);
 		assertEquals(testGuest, expectedGuest);
+	}
+
+	@Test
+	public void getGuestByIdShouldThrowExceptionWhenIdIsInvalid() {
+		//given
+		int invalidId = -1;
+		int invalidId2 = guestService.getAllGuests().size() + 2;
+		//then
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.getGuestById(invalidId);
 		});
@@ -66,16 +72,21 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void testRemoveGuestById() {
+	public void removeGuestByIdShouldDeleteTheGuestWithTheSpecifiedId() {
+		//when
+		guestService.createGuests(testGuest);
+		guestId = guestService.getAllGuests().get(0).getGuestId();
+		//then
+		assertTrue(guestService.removeGuestById(guestId));
+		assert (guestService.getAllGuests().isEmpty());
+	}
+
+	@Test
+	public void removeGuestByIdShouldThrowExceptionWhenIdIsInvalid() {
 		//given
 		int invalidId = -1;
-		int invalidId2 = guestRepository.findAll().size() + 2;
-		//when
-		guestRepository.saveAll(testGuest);
-		guestId = guestRepository.findAll().get(0).getGuestId();
+		int invalidId2 = guestService.getAllGuests().size() + 2;
 		//then
-		assertTrue(guestRepository.deleteById(guestId));
-		assert (guestRepository.findAll().isEmpty());
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.removeGuestById(invalidId);
 		});
@@ -86,12 +97,11 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void testUpdateGuest() {
+	public void testUpdateGuestSuccessScenario() {
 		//given
 		String updateFName = "newGuestFName";
 		String updateLName = "newGuestLName";
 		int newGuestId = 1;
-		int invalidId = -1;
 		Gender newGuestGender = Gender.FEMALE;
 		//when
 		guestService.createGuest(guestId, fName, lName, guestGender);
@@ -99,6 +109,24 @@ public class GuestServiceTest {
 		guestService.updateGuest(guestId, fName, lName, guestGender);
 		//then
 		assertEquals(guestService.getGuestById(newGuestId), newGuest);
+	}
+	@Test
+	public  void updateGuestShouldThrowExceptionWhenThePassedGuestInformationIsInvalid(){
+		//given
+		String updateFName = "newGuestFName";
+		String updateLName = "newGuestLName";
+		String invalidFName = null;
+		String invalidLName = "";
+		int invalidId = -1;
+		//when
+		guestService.createGuest(guestId, fName, lName, guestGender);
+		//then
+		assertThrows(FailedInitializationException.class,()->{
+			guestService.updateGuest(guestId,invalidFName,updateLName,guestGender);
+		});
+		assertThrows(FailedInitializationException.class,()->{
+			guestService.updateGuest(guestId,updateFName,invalidLName,guestGender);
+		});
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.updateGuest(invalidId, updateFName, updateLName, guestGender);
 		});
@@ -106,7 +134,6 @@ public class GuestServiceTest {
 
 	@Test
 	public void testCreateGuest() {
-
 		//when
 		guestService.createGuest(guestId, fName, lName, guestGender);
 		//then

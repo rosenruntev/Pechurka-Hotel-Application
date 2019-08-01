@@ -9,10 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
- */
-
-/**
  * GuestService
  */
 @Service
@@ -32,8 +28,8 @@ public class GuestService {
 	 * @return Returns the sought after guest.
 	 */
 	public Guest getGuestById(int id) {
-		if (id < 0) {
-			throw new ItemNotFoundException("No such guest!");
+		if (assertIdForTheSpecifiedRepository(id,guestRepository)) {
+			throw new ItemNotFoundException("id has invalid value !");
 		}
 		return this.guestRepository.findById(id);
 	}
@@ -46,7 +42,7 @@ public class GuestService {
 	 * @return Returns boolean answer based on whether the operation was successful.
 	 */
 	public boolean removeGuestById(int id) {
-		if (id < 0 || (!guestRepository.existsById(id))) {
+		if (assertIdForTheSpecifiedRepository(id,guestRepository)) {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
 		return guestRepository.deleteById(id);
@@ -100,6 +96,21 @@ public class GuestService {
 			throw new ItemNotFoundException("guestItem is invalid");
 		}
 		return true;
+	}
+
+	private boolean assertIdForTheSpecifiedRepository(int id,GuestRepository guestRepository){
+		return !(id >= 0 && id <= guestRepository.findAll().size() && (guestRepository.existsById(id)));
+	}
+
+	/**
+	 * Creates one or more guests.
+	 * @param guests Represents the guests to be created.
+	 */
+	public void createGuests(Guest... guests){
+		if(guests == null || guests.length == 0){
+			throw new ItemNotFoundException();
+		}
+		guestRepository.saveAll(guests);
 	}
 
 }
