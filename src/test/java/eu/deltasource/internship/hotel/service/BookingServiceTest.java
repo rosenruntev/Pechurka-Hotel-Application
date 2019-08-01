@@ -86,7 +86,7 @@ public class BookingServiceTest {
 		roomService.saveRoom(new Room(1, commodities));
 
 		// Then
-		assertThrows(ItemNotFoundException.class, () -> {
+		assertThrows(IllegalArgumentException.class, () -> {
 			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
@@ -100,7 +100,7 @@ public class BookingServiceTest {
 		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
 
 		// Then
-		assertThrows(ItemNotFoundException.class, () -> {
+		assertThrows(IllegalArgumentException.class, () -> {
 			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);

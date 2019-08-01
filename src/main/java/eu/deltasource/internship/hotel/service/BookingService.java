@@ -43,11 +43,12 @@ public class BookingService {
 	 */
 	public void createBooking(int bookingId, int guestId, int roomId, int numberOfPeople, LocalDate fromDate, LocalDate toDate) {
 		validateBookingId(bookingId);
-		if (bookingRepository.existsById(bookingId)) {
+		if (existsById(bookingId)) {
 			throw new IllegalArgumentException("Booking with id " + bookingId + " already exists.");
 		}
 
-		guestService.getGuestById(guestId);
+		validateGuestId(guestId);
+		validateRoomId(roomId);
 		Room room = roomService.getRoomById(roomId);
 		if (room.getRoomCapacity() != numberOfPeople) {
 			throw new IllegalArgumentException("Number of people must be equal to room capacity.");
@@ -78,6 +79,8 @@ public class BookingService {
 	 */
 	public Booking getBookingById(int id) {
 		validateBookingId(id);
+		checkIfBookingWithIdDoesNotExists(id);
+
 		return bookingRepository.findById(id);
 	}
 
@@ -90,6 +93,7 @@ public class BookingService {
 	 */
 	public void updateBookingDatesById(int id, LocalDate fromDate, LocalDate toDate) {
 		validateBookingId(id);
+		checkIfBookingWithIdDoesNotExists(id);
 		validateDates(fromDate, toDate);
 		if (isRoomBookedForPeriod(id, fromDate, toDate)) {
 			throw new IllegalArgumentException("Room is already booked for that period.");
@@ -108,11 +112,14 @@ public class BookingService {
 	 */
 	public void removeBookingById(int id) {
 		validateBookingId(id);
+		checkIfBookingWithIdDoesNotExists(id);
+
 		bookingRepository.deleteById(id);
 	}
 
 	/**
 	 * Checks if booking with particular id exists
+	 *
 	 * @param id the id of the booking
 	 * @return true if the booking with particular id exists otherwise false
 	 */
@@ -124,6 +131,29 @@ public class BookingService {
 	private void validateBookingId(int bookingId) {
 		if (bookingId <= 0) {
 			throw new IllegalArgumentException("Booking id cannot be a negative number or zero.");
+		}
+	}
+
+	private void checkIfBookingWithIdDoesNotExists(int id) {
+		if (!existsById(id)) {
+			throw new IllegalArgumentException("Booking with id " + id + " does not exists.");
+		}
+	}
+
+	private void validateGuestId(int guestId) {
+		if (guestId <= 0) {
+			throw new IllegalArgumentException("Guest id cannot be a negative number or zero.");
+		} else if (!guestService.existsById(guestId)) {
+			throw new IllegalArgumentException("Guest with id " + guestId + " does not exist.");
+		}
+	}
+
+	private void validateRoomId(int roomId) {
+		if (roomId <= 0) {
+			throw new IllegalArgumentException("Room id cannot be a negative number or zero.");
+		}
+		if (!roomService.existsById(roomId)) {
+			throw new IllegalArgumentException("Room with id " + roomId + " does not exist.");
 		}
 	}
 
