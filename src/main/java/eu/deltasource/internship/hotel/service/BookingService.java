@@ -186,10 +186,9 @@ public class BookingService {
 
 	private boolean areDatesOverlapping(LocalDate firstFromDate, LocalDate firstToDate,
 										LocalDate secondFromDate, LocalDate secondToDate) {
-		if (!(firstToDate.isBefore(secondFromDate) || firstFromDate.isAfter(secondToDate))) {
-			return true;
-		}
-
-		return false;
+		boolean isFirstDateLeavingBeforeSecondDateAccommodation = firstToDate.isBefore(secondFromDate);
+		boolean isFirstDateAccommodationAfterSecondDateLeaving = firstFromDate.isAfter(secondToDate);
+		boolean areDatesOverlapping = !(isFirstDateLeavingBeforeSecondDateAccommodation || isFirstDateAccommodationAfterSecondDateLeaving);
+		return areDatesOverlapping;
 	}
 }
