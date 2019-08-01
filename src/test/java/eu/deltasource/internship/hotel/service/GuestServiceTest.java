@@ -62,6 +62,12 @@ public class GuestServiceTest {
 		int invalidId = -1;
 		int invalidId2 = guestService.getAllGuests().size() + 2;
 		//then
+<<<<<<< HEAD
+=======
+		assertFalse(guestRepository.findAll().isEmpty());
+		assertEquals(1, guestId);
+		assertEquals(testGuest, expectedGuest);
+>>>>>>> aba5c41d302a8e69174b459f161b06a5d66571fd
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.getGuestById(invalidId);
 		});
