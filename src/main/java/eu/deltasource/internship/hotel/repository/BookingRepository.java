@@ -66,7 +66,7 @@ public class BookingRepository {
 		if (count() == 0) {
 			return count() + 1;
 		}
-		return repository.get(count()).getBookingId() + 1;
+		return repository.get(count() - 1).getBookingId() + 1;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class BookingRepository {
 	 * All validations should be done in the service layer!!!
 	 */
 	public Booking updateDates(Booking item) {
-		for(Booking booking : repository) {
+		for (Booking booking : repository) {
 			if (booking.getBookingId() == item.getBookingId()) {
 				booking.setBookingDates(item.getFrom(), item.getTo());
 				return new Booking(booking);

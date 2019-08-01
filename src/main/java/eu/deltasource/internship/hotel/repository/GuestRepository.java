@@ -69,7 +69,7 @@ public class GuestRepository {
 		if (count() == 0) {
 			return count() + 1;
 		}
-		return repository.get(count()).getGuestId() + 1;
+		return repository.get(count() - 1).getGuestId() + 1;
 	}
 
 	/**
