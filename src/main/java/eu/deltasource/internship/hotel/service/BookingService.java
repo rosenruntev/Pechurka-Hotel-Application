@@ -95,11 +95,17 @@ public class BookingService {
 		validateBookingId(id);
 		checkIfBookingWithIdDoesNotExists(id);
 		validateDates(fromDate, toDate);
-		if (isRoomBookedForPeriod(id, fromDate, toDate)) {
-			throw new IllegalArgumentException("Room is already booked for that period.");
+		Booking booking = getBookingById(id);
+
+		// Check if we are trying to set dates that overlap with current booking dates
+		// if we have booking like 2019.8.1 - 2019.8.5 to be able to set dates like 2019.8.2 - 2019.8.4
+		// if they overlap, the booking dates will be changed otherwise isRoomBookedForPeriod will be called
+		if (booking.getTo().isBefore(fromDate) || booking.getFrom().isAfter(toDate)) {
+			if (isRoomBookedForPeriod(id, fromDate, toDate)) {
+				throw new IllegalArgumentException("Room is already booked for that period.");
+			}
 		}
 
-		Booking booking = getBookingById(id);
 		Booking bookingWithChangedDates = new Booking(id, booking.getGuestId(),
 			booking.getRoomId(), booking.getNumberOfPeople(), fromDate, toDate);
 		bookingRepository.updateDates(bookingWithChangedDates);

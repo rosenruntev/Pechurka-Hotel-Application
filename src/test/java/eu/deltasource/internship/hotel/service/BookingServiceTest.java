@@ -7,7 +7,6 @@ import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
 import eu.deltasource.internship.hotel.domain.commodity.Bed;
 import eu.deltasource.internship.hotel.domain.commodity.BedType;
-import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.BookingRepository;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
@@ -256,6 +255,29 @@ public class BookingServiceTest {
 		// When
 		LocalDate newFromDate = bookingFromDate.plusDays(20);
 		LocalDate newToDate = bookingToDate.plusDays(20);
+		bookingService.updateBookingDatesById(1, newFromDate, newToDate);
+
+		// Then
+		assertEquals(newFromDate, bookingService.getBookingById(1).getFrom());
+		assertEquals(newToDate, bookingService.getBookingById(1).getTo());
+	}
+
+	@Test
+	public void updateBookingShouldBeAbleToUpdateDatesThatOverlapWithPreviousDates() {
+		// Given
+		// TODO: use GuestService to add the guest after merge
+		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
+
+		Set<AbstractCommodity> commodities = new HashSet();
+		commodities.add(new Bed(BedType.DOUBLE));
+		roomService.saveRoom(new Room(1, commodities));
+
+		bookingService.createBooking(1, 1, 1, 2,
+			bookingFromDate, bookingToDate);
+
+		// When
+		LocalDate newFromDate = bookingFromDate.plusDays(1);
+		LocalDate newToDate = bookingToDate.minusDays(1);
 		bookingService.updateBookingDatesById(1, newFromDate, newToDate);
 
 		// Then
