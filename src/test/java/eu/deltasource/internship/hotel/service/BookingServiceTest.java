@@ -29,8 +29,8 @@ public class BookingServiceTest {
 	private GuestService guestService;
 	private BookingRepository bookingRepository;
 	private BookingService bookingService;
-	private LocalDate bookingFromDate;
-	private LocalDate bookingToDate;
+	private LocalDate generalBookingFromDate;
+	private LocalDate generalBookingToDate;
 
 	@BeforeEach
 	public void setUp() {
@@ -42,8 +42,8 @@ public class BookingServiceTest {
 		guestService = new GuestService(guestRepository);
 		bookingService = new BookingService(bookingRepository, roomService, guestService);
 
-		bookingFromDate = LocalDate.now();
-		bookingToDate = bookingFromDate.plusDays(5);
+		generalBookingFromDate = LocalDate.now();
+		generalBookingToDate = generalBookingFromDate.plusDays(5);
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class BookingServiceTest {
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
 			bookingService.createBooking(-1, 1, 1, 1,
-				bookingFromDate, bookingToDate);
+				generalBookingFromDate, generalBookingToDate);
 		});
 	}
 
@@ -67,8 +67,8 @@ public class BookingServiceTest {
 		commodities.add(new Bed(BedType.SINGLE));
 		roomService.saveRoom(new Room(1, commodities));
 
-		bookingService.createBooking(1, 1, 1, 1, bookingFromDate,
-			bookingToDate);
+		bookingService.createBooking(1, 1, 1, 1, generalBookingFromDate,
+			generalBookingToDate);
 
 		// When
 		// Then
@@ -89,7 +89,7 @@ public class BookingServiceTest {
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
 			bookingService.createBooking(1, 1, 1, 1,
-				bookingFromDate, bookingToDate);
+				generalBookingFromDate, generalBookingToDate);
 		});
 	}
 
@@ -103,7 +103,7 @@ public class BookingServiceTest {
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
 			bookingService.createBooking(1, 1, 1, 1,
-				bookingFromDate, bookingToDate);
+				generalBookingFromDate, generalBookingToDate);
 		});
 	}
 
@@ -121,7 +121,7 @@ public class BookingServiceTest {
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
 			bookingService.createBooking(1, 1, 1, 1,
-				bookingFromDate, bookingToDate);
+				generalBookingFromDate, generalBookingToDate);
 		});
 	}
 
@@ -172,13 +172,13 @@ public class BookingServiceTest {
 		roomService.saveRoom(new Room(1, commodities));
 
 		bookingService.createBooking(1, 1, 1, 2,
-			bookingFromDate, bookingToDate);
+			generalBookingFromDate, generalBookingToDate);
 
 		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
 			bookingService.createBooking(2, 1, 1, 2,
-				bookingFromDate, bookingToDate);
+				generalBookingFromDate, generalBookingToDate);
 		});
 	}
 
@@ -194,7 +194,7 @@ public class BookingServiceTest {
 
 		// When
 		bookingService.createBooking(1, 1, 1, 2,
-			bookingFromDate, bookingToDate);
+			generalBookingFromDate, generalBookingToDate);
 
 		// Then
 		assertEquals(true, bookingService.existsById(1));
@@ -211,7 +211,7 @@ public class BookingServiceTest {
 		roomService.saveRoom(new Room(1, commodities));
 
 		bookingService.createBooking(1, 1, 1, 2,
-			bookingFromDate, bookingToDate);
+			generalBookingFromDate, generalBookingToDate);
 
 		// When
 		List<Booking> bookings = bookingService.getAllBookings();
@@ -231,7 +231,7 @@ public class BookingServiceTest {
 		roomService.saveRoom(new Room(1, commodities));
 
 		bookingService.createBooking(1, 1, 1, 2,
-			bookingFromDate, bookingToDate);
+			generalBookingFromDate, generalBookingToDate);
 
 		// When
 		Booking booking = bookingService.getBookingById(1);
@@ -251,11 +251,11 @@ public class BookingServiceTest {
 		roomService.saveRoom(new Room(1, commodities));
 
 		bookingService.createBooking(1, 1, 1, 2,
-			bookingFromDate, bookingToDate);
+			generalBookingFromDate, generalBookingToDate);
 
 		// When
-		LocalDate newFromDate = bookingFromDate.plusDays(20);
-		LocalDate newToDate = bookingToDate.plusDays(20);
+		LocalDate newFromDate = generalBookingFromDate.plusDays(20);
+		LocalDate newToDate = generalBookingToDate.plusDays(20);
 		bookingService.updateBookingDatesById(1, newFromDate, newToDate);
 
 		// Then
@@ -274,11 +274,11 @@ public class BookingServiceTest {
 		roomService.saveRoom(new Room(1, commodities));
 
 		bookingService.createBooking(1, 1, 1, 2,
-			bookingFromDate, bookingToDate);
+			generalBookingFromDate, generalBookingToDate);
 
 		// When
-		LocalDate newFromDate = bookingFromDate.plusDays(1);
-		LocalDate newToDate = bookingToDate.minusDays(1);
+		LocalDate newFromDate = generalBookingFromDate.plusDays(1);
+		LocalDate newToDate = generalBookingToDate.minusDays(1);
 		bookingService.updateBookingDatesById(1, newFromDate, newToDate);
 
 		// Then
@@ -297,7 +297,7 @@ public class BookingServiceTest {
 		roomService.saveRoom(new Room(1, commodities));
 
 		bookingService.createBooking(1, 1, 1, 2,
-			bookingFromDate, bookingToDate);
+			generalBookingFromDate, generalBookingToDate);
 
 		// When
 		bookingService.removeBookingById(1);
