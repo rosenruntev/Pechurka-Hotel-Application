@@ -2,15 +2,13 @@ package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
+import eu.deltasource.internship.hotel.exception.InvalidItemException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
- */
 @Service
 public class RoomService {
 
@@ -32,7 +30,7 @@ public class RoomService {
 	 * @return Returns the sought after room.
 	 */
 	public Room getRoomById(int id) {
-		if (assertIdForTheSpecifiedRepository(id, roomRepository)) {
+		if (assertIdForTheSpecifiedRepository(id)) {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
 		return roomRepository.findById(id);
@@ -55,7 +53,7 @@ public class RoomService {
 		if (room == null) {
 			throw new ItemNotFoundException("room has null value !");
 		}
-		assertRoomCommodities(room);
+		validateRoom(room);
 		roomRepository.save(room);
 		return roomRepository.findById(room.getRoomId());
 	}
@@ -66,7 +64,7 @@ public class RoomService {
 	 * @param rooms Room/s to be added.
 	 */
 	public void saveRooms(Room... rooms) {
-		assertRoomCommodities(rooms);
+		validateRoom(rooms);
 		roomRepository.saveAll(rooms);
 	}
 
@@ -77,7 +75,7 @@ public class RoomService {
 	 * @return Returns boolean answer based on the outcome of the operation.
 	 */
 	public boolean deleteRoom(Room room) {
-		if (room == null || assertIdForTheSpecifiedRepository(room.getRoomId(), roomRepository)) {
+		if (room == null || assertIdForTheSpecifiedRepository(room.getRoomId())) {
 			throw new ItemNotFoundException("room has null value OR room id has invalid value !");
 		}
 		return roomRepository.delete(room);
@@ -90,7 +88,7 @@ public class RoomService {
 	 * @return Returns boolean answer based on the outcome of the operation.
 	 */
 	public boolean deleteRoomById(int id) {
-		if (assertIdForTheSpecifiedRepository(id, roomRepository)) {
+		if (assertIdForTheSpecifiedRepository(id)) {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
 		return roomRepository.deleteById(id);
@@ -103,22 +101,27 @@ public class RoomService {
 	 * @return Returns a copy of the updated room.
 	 */
 	public Room updateRoom(Room room) {
-		if (room == null || assertIdForTheSpecifiedRepository(room.getRoomId(), roomRepository)) {
+		validateRoom(room);
+		if (assertIdForTheSpecifiedRepository(room.getRoomId())) {
 			throw new ItemNotFoundException("room has null value OR room id has invalid value !");
 		}
-		assertRoomCommodities(room);
 		return roomRepository.updateRoom(room);
 	}
 
-	private boolean assertIdForTheSpecifiedRepository(int id, RoomRepository roomRepository) {
-		return !(id >= 0 && id <= roomRepository.findAll().size() && (roomRepository.existsById(id)));
+	private boolean assertIdForTheSpecifiedRepository(int id) {
+		return !(id >= 0 && (roomRepository.existsById(id)));
 	}
 
-	private void assertRoomCommodities(Room... rooms) {
+	private void validateRoom(Room... rooms) {
+		for (Room room : rooms) {
+			if (room == null) {
+				throw new ItemNotFoundException("room has null value !");
+			}
+		}
 		for (Room room : rooms) {
 			for (AbstractCommodity commodity : room.getCommodities()) {
 				if (commodity == null) {
-					throw new ItemNotFoundException("Commodity has null value");
+					throw new InvalidItemException("Commodity has null value !");
 				}
 			}
 		}

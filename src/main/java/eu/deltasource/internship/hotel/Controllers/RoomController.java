@@ -11,13 +11,13 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-public class RoomServiceController {
+public class RoomController {
 	private RoomService roomService;
 
-	private RoomServiceController() {
+	private RoomController() {
 	}
 
-	public RoomServiceController(RoomService roomService) {
+	public RoomController(RoomService roomService) {
 		this.roomService = roomService;
 	}
 
@@ -31,12 +31,12 @@ public class RoomServiceController {
 		return roomService.getRoomById(id);
 	}
 
-	@RequestMapping(value = "GeuestService/updateGuest", method = RequestMethod.POST)
+	@RequestMapping(value = "RoomService/updateGuest", method = RequestMethod.POST)
 	public Room CreateRoom(Room room) {
 		return roomService.saveRoom(room);
 	}
 
-	@RequestMapping(value = "GeuestService/updateGuest", method = RequestMethod.POST)
+	@RequestMapping(value = "RoomService/updateGuest", method = RequestMethod.POST)
 	public void CreateRooms(Room... rooms) {
 		roomService.saveRooms(rooms);
 	}

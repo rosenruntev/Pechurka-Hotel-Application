@@ -2,6 +2,7 @@ package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.*;
+import eu.deltasource.internship.hotel.exception.InvalidItemException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,18 +73,26 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void getRoomByIdShouldReturnTheRoomWithTheSpecifiedId() {
+	void getRoomByIdShouldReturnAReferenceToTheRoomWeAreLookingFor() {
+		//given
+		Room actualRoom;
+		int doubleRoomCapacity = 2;
+		Set<AbstractCommodity> doubleRoomCommodities = doubleRoom.getCommodities();
+		//when
+		actualRoom = roomService.getRoomById(doubleRoom.getRoomId());
 		//then
-		assertEquals(roomService.getRoomById(doubleRoom.getRoomId()), doubleRoom);
+		assertEquals(doubleRoom, actualRoom);
+		assertEquals(doubleRoom.getCommodities(), actualRoom.getCommodities());
+		assertEquals(actualRoom.getRoomCapacity(), doubleRoomCapacity);
 	}
 
 	@Test
 	void getRoomByIdShouldThrowExceptionWhenTheProvidedIndexIsOutOfBounds() {
 		//given
-		int idxOutOfBounds = 7;
+		int nonExistingId = 7;
 		//then
 		assertThrows(ItemNotFoundException.class, () -> {
-			roomService.getRoomById(idxOutOfBounds);
+			roomService.getRoomById(nonExistingId);
 		});
 	}
 
@@ -91,19 +100,19 @@ class RoomServiceTest {
 	void saveRoomShouldReturnTheCurrentlyAddedRoom() {
 		//given
 		Room testRoom = new Room(1, singleSet);
-		Room expectedReturnValue;
+		Room actualValue;
 		//when
-		expectedReturnValue = roomService.saveRoom(testRoom);
+		actualValue = roomService.saveRoom(testRoom);
 		//then
-		assertEquals(testRoom, expectedReturnValue);
+		assertEquals(testRoom, actualValue);
 	}
 
 	@Test
-	void saveRoomShouldThrowExcWhenRoomIsNull(){
+	void saveRoomShouldThrowExcWhenRoomIsNull() {
 		//given
-		Room nullRoom = null ;
+		Room nullRoom = null;
 		//then
-		assertThrows(ItemNotFoundException.class,()->{
+		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.saveRoom(nullRoom);
 		});
 	}
@@ -117,9 +126,7 @@ class RoomServiceTest {
 		//when
 		roomService.saveRooms(testRoom1, testRoom2, testRoom3);
 		//then
-		assertTrue(roomService.findRooms().contains(testRoom1));
-		assertTrue(roomService.findRooms().contains(testRoom2));
-		assertTrue(roomService.findRooms().contains(testRoom3));
+		assertTrue(roomService.findRooms().containsAll(Arrays.asList(testRoom1, testRoom2, testRoom3)));
 	}
 
 	@Test
@@ -128,7 +135,7 @@ class RoomServiceTest {
 		Set<AbstractCommodity> commoditiesSetWithNullMembers = new HashSet<>(Arrays.asList(new Bed(SINGLE), null, new Toilet()));
 		Room roomWithNullCommodity = new Room(1, commoditiesSetWithNullMembers);
 		//then
-		assertThrows(ItemNotFoundException.class, () -> {
+		assertThrows(InvalidItemException.class, () -> {
 			roomService.saveRooms(roomWithNullCommodity);
 		});
 	}
@@ -141,33 +148,37 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void deleteRoomShouldThrowExcWhenRoomIsNullOrDoesNotExist(){
+	void deleteRoomShouldThrowExcWhenRoomIsNullOrDoesNotExist() {
 		//given
-		Room nullRoom = null ;
-		Room nonExistentRoom = new Room(236,singleSet);
-		//then
-		assertThrows(ItemNotFoundException.class,()->{
+		Room nullRoom = null;
+		Room nonExistentRoom = new Room(236, singleSet);
+		//when + then
+		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.deleteRoom(nullRoom);
 		});
-		assertThrows(ItemNotFoundException.class,()->{
+		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.deleteRoom(nonExistentRoom);
 		});
 	}
 
 	@Test
 	void deleteRoomByIdShouldReturnTrueWhenDeletionIsSuccessful() {
+		//given
+		//when
 		//then
 		assertTrue(roomService.deleteRoomById(threePeopleKingSizeRoom.getRoomId()));
 		assertFalse(roomService.findRooms().contains(threePeopleKingSizeRoom));
 	}
 
 	@Test
-	void deleteRoomByIdShouldThrowExcWhenIdIsOutOfBoundsOrDoesntExist(){
+	void deleteRoomByIdShouldThrowExcWhenIdIsOutOfBoundsOrDoesNotExist() {
+		//given
+		//when
 		//then
-		assertThrows(ItemNotFoundException.class,()->{
+		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.deleteRoomById(-1);
 		});
-		assertThrows(ItemNotFoundException.class,()->{
+		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.deleteRoomById(250);
 		});
 	}
@@ -175,12 +186,14 @@ class RoomServiceTest {
 	@Test
 	void updateRoomShouldMakeChangesToTheRoomWithTheSpecifiedRoomId() {
 		//given
-		Room testRoom = new Room(roomService.getRoomById(1).getRoomId(), singleSet);
+		int roomId = 1;
+		int oldRoomCapacity = roomService.getRoomById(roomId).getRoomCapacity();
+		Room testRoom = new Room(roomService.getRoomById(roomId).getRoomId(), singleSet);
 		//when
 		roomService.updateRoom(testRoom);
 		//then
-		assertEquals(testRoom.getRoomCapacity(), roomService.getRoomById(1).getRoomCapacity());
-		assertEquals(testRoom.getCommodities(), roomService.getRoomById(1).getCommodities());
+		assertNotEquals(oldRoomCapacity, roomService.getRoomById(roomId).getCommodities());
+		assertEquals(testRoom.getCommodities(), roomService.getRoomById(roomId).getCommodities());
 
 	}
 
@@ -196,11 +209,10 @@ class RoomServiceTest {
 		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.updateRoom(nullRoom);
 		});
-
 		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.updateRoom(notPresentRoom);
 		});
-		assertThrows(ItemNotFoundException.class, () -> {
+		assertThrows(InvalidItemException.class, () -> {
 			roomService.updateRoom(roomWithNullCommodity);
 		});
 	}

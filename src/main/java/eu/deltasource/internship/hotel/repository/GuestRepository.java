@@ -20,9 +20,9 @@ public class GuestRepository {
 
 
 	///////////////////
-	public GuestRepository(Guest newGuest){
+	public GuestRepository(Guest... newGuests){
 		repository= new ArrayList<>();
-		repository.add(newGuest);
+		Collections.addAll(repository, newGuests);
 	}
 	////////////////////
 	/**

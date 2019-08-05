@@ -3,9 +3,7 @@ package eu.deltasource.internship.hotel.service;
 import eu.deltasource.internship.hotel.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
- */
+
 @Service
 public class BookingService {
 

@@ -4,23 +4,24 @@ import eu.deltasource.internship.hotel.domain.Gender;
 import eu.deltasource.internship.hotel.domain.Guest;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import eu.deltasource.internship.hotel.service.GuestService;
-
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 @RestController
-public class GuestServiceController {
-	private GuestService guestService;
+public class GuestController {
+	private Guest newGuest1 = new Guest(1,"Ivan","Todorov",Gender.MALE);
+	private Guest newGuest2 = new Guest(2,"Maria","Topalova",Gender.FEMALE);
+	private Guest newGuest3 = new Guest(3,"Georgi","Delev",Gender.FEMALE);
+	private GuestRepository guestRepository = new GuestRepository(newGuest1,newGuest2,newGuest3);
+	private GuestService guestService = new GuestService(guestRepository);
 
 
-	private GuestServiceController() {
+
+	private GuestController() {
 	}
 
-	public GuestServiceController(GuestService guestService) {
+	public GuestController(GuestService guestService) {
 		this.guestService = guestService;
 	}
 
@@ -39,7 +40,7 @@ public class GuestServiceController {
 		return guestService.updateGuest(guestId, firstName, lastName, gender);
 	}
 
-	@RequestMapping(value = "GeuestService/updateGuest", method = RequestMethod.POST)
+	@RequestMapping(value = "GuestService/updateGuest", method = RequestMethod.POST)
 	public void createGuest(@RequestBody int guestId, String firstName, String lastName, Gender gender) {
 		guestService.createGuest(guestId, firstName, lastName, gender);
 	}
