@@ -32,34 +32,20 @@ public class BookingService {
 	}
 
 	/**
-	 * Creates a booking with given booking id, guest id, room id, number of people and dates
+	 * Creates a booking with given guest id, number of people and dates
 	 *
-	 * @param bookingId      the booking id
 	 * @param guestId        the guest id
-	 * @param roomId         the room id
 	 * @param numberOfPeople the room's capacity
 	 * @param fromDate       the date of accommodation
 	 * @param toDate         the date of leaving
 	 */
-	public void createBooking(int bookingId, int guestId, int roomId, int numberOfPeople, LocalDate fromDate, LocalDate toDate) {
-		if (existsById(bookingId)) {
-			throw new IllegalArgumentException("Booking with id " + bookingId + " already exists.");
-		}
-
+	public void createBooking(int guestId, int numberOfPeople, LocalDate fromDate, LocalDate toDate) {
 		validateGuestId(guestId);
-		validateRoomId(roomId);
-		Room room = roomService.getRoomById(roomId);
-		if (room.getRoomCapacity() != numberOfPeople) {
-			throw new IllegalArgumentException("Number of people must be equal to room capacity.");
-		}
-
+		Room room = findAvailableRoom(fromDate, toDate, numberOfPeople);
 		validateDates(fromDate, toDate);
-		if (isRoomBookedForPeriod(roomId, fromDate, toDate)) {
-			throw new IllegalArgumentException("Room is already booked for that period.");
-		} else {
-			Booking newBooking = new Booking(bookingId, guestId, roomId, numberOfPeople, fromDate, toDate);
-			bookingRepository.save(newBooking);
-		}
+		// We are always passing 1 because booking's id is generated in booking repository
+		Booking newBooking = new Booking(1, guestId, room.getRoomId(), numberOfPeople, fromDate, toDate);
+		bookingRepository.save(newBooking);
 	}
 
 	/**
@@ -147,15 +133,6 @@ public class BookingService {
 		}
 	}
 
-	private void validateRoomId(int roomId) {
-		if (roomId <= 0) {
-			throw new IllegalArgumentException("Room id cannot be a negative number or zero.");
-		}
-		if (!roomService.existsById(roomId)) {
-			throw new IllegalArgumentException("Room with id " + roomId + " does not exist.");
-		}
-	}
-
 	private void validateDates(LocalDate fromDate, LocalDate toDate) {
 		if (fromDate == null || toDate == null) {
 			throw new IllegalArgumentException("Dates cannot be null.");
@@ -184,5 +161,21 @@ public class BookingService {
 		}
 
 		return true;
+	}
+
+	private Room findAvailableRoom(LocalDate fromDate, LocalDate toDate, int numberOfPeople) {
+		Room availableRoom = null;
+		for (Room room : roomService.findRooms()) {
+			if (room.getRoomCapacity() == numberOfPeople) {
+				if (!isRoomBookedForPeriod(room.getRoomId(), fromDate, toDate)) {
+					availableRoom = new Room(room);
+				}
+			}
+		}
+
+		if (availableRoom == null) {
+			throw new IllegalArgumentException("No available room");
+		}
+		return availableRoom;
 	}
 }
