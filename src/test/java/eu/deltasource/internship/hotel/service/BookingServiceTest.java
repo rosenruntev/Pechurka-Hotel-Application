@@ -48,9 +48,10 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfBookingIdIsNegative() {
+		// given
+		// when
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
-			// When
 			bookingService.createBooking(-1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -69,9 +70,9 @@ public class BookingServiceTest {
 		bookingService.createBooking(1, 1, 1, 1, bookingFromDate,
 			bookingToDate);
 
+		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
-			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				LocalDate.now(), LocalDate.now().plusDays(1));
 		});
@@ -84,9 +85,9 @@ public class BookingServiceTest {
 		commodities.add(new Bed(BedType.SINGLE));
 		roomService.saveRoom(new Room(1, commodities));
 
+		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
-			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -98,9 +99,9 @@ public class BookingServiceTest {
 		// TODO: use GuestService to add the guest after merge
 		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
 
+		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
-			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -116,9 +117,9 @@ public class BookingServiceTest {
 		commodities.add(new Bed(BedType.DOUBLE));
 		roomService.saveRoom(new Room(1, commodities));
 
+		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
-			// When
 			bookingService.createBooking(1, 1, 1, 1,
 				bookingFromDate, bookingToDate);
 		});
@@ -134,9 +135,9 @@ public class BookingServiceTest {
 		commodities.add(new Bed(BedType.DOUBLE));
 		roomService.saveRoom(new Room(1, commodities));
 
+		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
-			// When
 			bookingService.createBooking(1, 1, 1, 2,
 				LocalDate.now(), LocalDate.now());
 		});
@@ -152,9 +153,9 @@ public class BookingServiceTest {
 		commodities.add(new Bed(BedType.DOUBLE));
 		roomService.saveRoom(new Room(1, commodities));
 
+		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
-			// When
 			bookingService.createBooking(1, 1, 1, 2,
 				LocalDate.now().plusDays(1), LocalDate.now());
 		});
@@ -173,9 +174,9 @@ public class BookingServiceTest {
 		bookingService.createBooking(1, 1, 1, 2,
 			bookingFromDate, bookingToDate);
 
+		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
-			// When
 			bookingService.createBooking(2, 1, 1, 2,
 				bookingFromDate, bookingToDate);
 		});
