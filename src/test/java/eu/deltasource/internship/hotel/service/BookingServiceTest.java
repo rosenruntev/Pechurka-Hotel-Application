@@ -48,8 +48,8 @@ public class BookingServiceTest {
 
 	@Test
 	public void createBookingShouldThrowExceptionIfBookingIdIsNegative() {
-		// given
-		// when
+		// Given
+		// When
 		// Then
 		assertThrows(IllegalArgumentException.class, () -> {
 			bookingService.createBooking(-1, 1, 1, 1,
