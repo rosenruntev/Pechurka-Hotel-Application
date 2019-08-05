@@ -42,7 +42,6 @@ public class BookingService {
 	 * @param toDate         the date of leaving
 	 */
 	public void createBooking(int bookingId, int guestId, int roomId, int numberOfPeople, LocalDate fromDate, LocalDate toDate) {
-		validateBookingId(bookingId);
 		if (existsById(bookingId)) {
 			throw new IllegalArgumentException("Booking with id " + bookingId + " already exists.");
 		}
@@ -58,7 +57,8 @@ public class BookingService {
 		if (isRoomBookedForPeriod(roomId, fromDate, toDate)) {
 			throw new IllegalArgumentException("Room is already booked for that period.");
 		} else {
-			bookingRepository.save(new Booking(bookingId, guestId, roomId, numberOfPeople, fromDate, toDate));
+			Booking newBooking = new Booking(bookingId, guestId, roomId, numberOfPeople, fromDate, toDate);
+			bookingRepository.save(newBooking);
 		}
 	}
 
@@ -74,75 +74,68 @@ public class BookingService {
 	/**
 	 * Returns a booking with particular id
 	 *
-	 * @param id the id of the booking
+	 * @param bookingId the id of the booking
 	 * @return a booking with particular id
 	 */
-	public Booking getBookingById(int id) {
-		validateBookingId(id);
-		checkIfBookingWithIdDoesNotExists(id);
-
-		return bookingRepository.findById(id);
+	public Booking getBookingById(int bookingId) {
+		validateBookingId(bookingId);
+		return bookingRepository.findById(bookingId);
 	}
 
 	/**
 	 * Updates dates of booking with particular id
 	 *
-	 * @param id       the id of the booking
+	 * @param bookingId       the id of the booking
 	 * @param fromDate the date of accommodation
 	 * @param toDate   the date of leaving
 	 */
-	public void updateBookingDatesById(int id, LocalDate fromDate, LocalDate toDate) {
-		validateBookingId(id);
-		checkIfBookingWithIdDoesNotExists(id);
+	public void updateBookingDatesById(int bookingId, int guestId, LocalDate fromDate, LocalDate toDate) {
+		Booking booking = getBookingById(bookingId);
+		if (booking.getGuestId() != guestId) {
+			throw new IllegalArgumentException("Guest with id " + guestId + " is not the booking's guest");
+		}
 		validateDates(fromDate, toDate);
-		Booking booking = getBookingById(id);
 
 		// Check if we are trying to set dates that overlap with current booking dates
 		// if we have booking like 2019.8.1 - 2019.8.5 to be able to set dates like 2019.8.2 - 2019.8.4
 		// if they overlap, the booking dates will be changed otherwise isRoomBookedForPeriod will be called
 		if (!areDatesOverlapping(booking.getFrom(), booking.getTo(), fromDate, toDate)) {
-			if (isRoomBookedForPeriod(id, fromDate, toDate)) {
+			if (isRoomBookedForPeriod(bookingId, fromDate, toDate)) {
 				throw new IllegalArgumentException("Room is already booked for that period.");
 			}
 		}
 
-		Booking bookingWithChangedDates = new Booking(id, booking.getGuestId(),
-			booking.getRoomId(), booking.getNumberOfPeople(), fromDate, toDate);
-		bookingRepository.updateDates(bookingWithChangedDates);
+		booking.setBookingDates(fromDate, toDate);
+		bookingRepository.updateDates(booking);
 	}
 
 	/**
 	 * Removes a booking with particular id
 	 *
-	 * @param id the id of the booking
+	 * @param bookingId the id of the booking
 	 */
-	public void removeBookingById(int id) {
-		validateBookingId(id);
-		checkIfBookingWithIdDoesNotExists(id);
+	public void removeBookingById(int bookingId) {
+		if (!existsById(bookingId)) {
+			throw new IllegalArgumentException("Booking with id " + bookingId + " does not exists.");
+		}
 
-		bookingRepository.deleteById(id);
+		bookingRepository.deleteById(bookingId);
 	}
 
 	/**
 	 * Checks if booking with particular id exists
 	 *
-	 * @param id the id of the booking
+	 * @param bookingId the id of the booking
 	 * @return true if the booking with particular id exists otherwise false
 	 */
-	public boolean existsById(int id) {
-		validateBookingId(id);
-		return bookingRepository.existsById(id);
+	public boolean existsById(int bookingId) {
+		validateBookingId(bookingId);
+		return bookingRepository.existsById(bookingId);
 	}
 
 	private void validateBookingId(int bookingId) {
 		if (bookingId <= 0) {
 			throw new IllegalArgumentException("Booking id cannot be a negative number or zero.");
-		}
-	}
-
-	private void checkIfBookingWithIdDoesNotExists(int id) {
-		if (!existsById(id)) {
-			throw new IllegalArgumentException("Booking with id " + id + " does not exists.");
 		}
 	}
 
@@ -172,8 +165,7 @@ public class BookingService {
 	}
 
 	private boolean isRoomBookedForPeriod(int roomId, LocalDate fromDate, LocalDate toDate) {
-		List<Booking> bookings = bookingRepository.findAll();
-		for (Booking booking : bookings) {
+		for (Booking booking : getAllBookings()) {
 			if (booking.getRoomId() == roomId) {
 				if (areDatesOverlapping(booking.getFrom(), booking.getTo(), fromDate, toDate)) {
 					return true;
