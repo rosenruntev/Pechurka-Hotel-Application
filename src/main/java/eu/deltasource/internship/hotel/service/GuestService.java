@@ -17,7 +17,7 @@ public class GuestService {
 
 	private final GuestRepository guestRepository;
 
-	public GuestService(GuestRepository guestRepository) {
+	GuestService(GuestRepository guestRepository) {
 		this.guestRepository = guestRepository;
 	}
 
@@ -29,7 +29,7 @@ public class GuestService {
 	 * @return Returns the sought after guest.
 	 */
 	public Guest getGuestById(int id) {
-		if (assertIdForTheSpecifiedRepository(id,guestRepository)) {
+		if (assertIdForTheSpecifiedRepository(id, guestRepository)) {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
 		return this.guestRepository.findById(id);
@@ -43,7 +43,7 @@ public class GuestService {
 	 * @return Returns boolean answer based on whether the operation was successful.
 	 */
 	public boolean removeGuestById(int id) {
-		if (assertIdForTheSpecifiedRepository(id,guestRepository)) {
+		if (assertIdForTheSpecifiedRepository(id, guestRepository)) {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
 		return guestRepository.deleteById(id);
@@ -89,31 +89,33 @@ public class GuestService {
 	 * Asserts whether the data inside the specified guest is valid.
 	 * If the object has null value or the id is negativa
 	 *
-	 * @param item Represents the guest that is to be asserted.
-	 * @return Returns a boolean answer based on the assertion's outcome.
+	 * @param items Represents the guests that are to be asserted.
 	 */
-	private boolean assertGuest(Guest item) {
-		if (item == null || item.getGuestId() < 0) {
-			throw new ItemNotFoundException("guestItem is invalid !");
+	private void assertGuest(Guest... items) {
+		for (Guest guest : items) {
+			if (guest == null || guest.getGuestId() < 0) {
+				throw new ItemNotFoundException("guestItem is invalid !");
+			}
+			if (guest.getFirstName().contains(" ") || guest.getLastName().contains(" ")) {
+				throw new FailedInitializationException("Name contains forbidden symbols !");
+			}
 		}
-		if(item.getFirstName().contains(" ") || item.getLastName().contains(" ")){
-			throw  new FailedInitializationException("Name contains forbidden symbols !");
-		}
-		return true;
 	}
 
-	private boolean assertIdForTheSpecifiedRepository(int id,GuestRepository guestRepository){
+	private boolean assertIdForTheSpecifiedRepository(int id, GuestRepository guestRepository) {
 		return !(id >= 0 && id <= guestRepository.findAll().size() && (guestRepository.existsById(id)));
 	}
 
 	/**
 	 * Creates one or more guests.
+	 *
 	 * @param guests Represents the guests to be created.
 	 */
-	public void createGuests(Guest... guests){
-		if(guests.length == 0){
+	void createGuests(Guest... guests) {
+		if (guests.length == 0) {
 			throw new ItemNotFoundException("No Guests to be added !");
 		}
+		assertGuest(guests);
 		guestRepository.saveAll(guests);
 	}
 

@@ -18,19 +18,9 @@ class RoomServiceTest {
 
 
 	private RoomService roomService;
-
 	private RoomRepository roomRepository;
-
 	private Room doubleRoom;
-	private Room singleRoom;
-	private Room kingSizeRoom;
 	private Room threePeopleKingSizeRoom;
-	private Room fourPersonRoom;
-	private Room fivePersonRoom;
-
-	private AbstractCommodity doubleBed;
-	private AbstractCommodity toilet;
-	private AbstractCommodity shower;
 
 	// commodities for a single room
 	private static final Set<AbstractCommodity> singleSet = new HashSet<>(Arrays.asList(new Bed(SINGLE), new Toilet(), new Shower()));
@@ -58,25 +48,24 @@ class RoomServiceTest {
 
 		// Initialize Repositories
 
-
 		roomRepository = new RoomRepository();
 
 		// Initialize Services
 		roomService = new RoomService(roomRepository);
 		// Commodities for a double room
-		doubleBed = new Bed(BedType.DOUBLE);
-		toilet = new Toilet();
-		shower = new Shower();
+		AbstractCommodity doubleBed = new Bed(BedType.DOUBLE);
+		AbstractCommodity toilet = new Toilet();
+		AbstractCommodity shower = new Shower();
 		Set<AbstractCommodity> doubleSet = new HashSet<>(Arrays.asList(doubleBed, toilet, shower));
 
 
 		// create some rooms
 		doubleRoom = new Room(1, doubleSet);
-		singleRoom = new Room(1, singleSet);
-		kingSizeRoom = new Room(1, kingSizeSet);
+		Room singleRoom = new Room(1, singleSet);
+		Room kingSizeRoom = new Room(1, kingSizeSet);
 		threePeopleKingSizeRoom = new Room(1, threePeopleKingSizeSet);
-		fourPersonRoom = new Room(1, fourPersonSet);
-		fivePersonRoom = new Room(1, fivePersonSet);
+		Room fourPersonRoom = new Room(1, fourPersonSet);
+		Room fivePersonRoom = new Room(1, fivePersonSet);
 
 		// adds the rooms to the repository, which then can be accesses from the RoomService
 		roomService.saveRooms(doubleRoom, singleRoom, kingSizeRoom, threePeopleKingSizeRoom, fourPersonRoom, fivePersonRoom);
@@ -87,10 +76,11 @@ class RoomServiceTest {
 		//then
 		assertEquals(roomService.getRoomById(doubleRoom.getRoomId()), doubleRoom);
 	}
+
 	@Test
-	void getRoomByIdShouldThrowExceptionWhenTheProvidedIndexIsOutOfBounds(){
+	void getRoomByIdShouldThrowExceptionWhenTheProvidedIndexIsOutOfBounds() {
 		//given
-		int idxOutOfBounds = 7 ;
+		int idxOutOfBounds = 7;
 		//then
 		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.getRoomById(idxOutOfBounds);
@@ -109,7 +99,17 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void saveRooms() {
+	void saveRoomShouldThrowExcWhenRoomIsNull(){
+		//given
+		Room nullRoom = null ;
+		//then
+		assertThrows(ItemNotFoundException.class,()->{
+			roomService.saveRoom(nullRoom);
+		});
+	}
+
+	@Test
+	void saveRooms_SuccessScenario() {
 		//given
 		Room testRoom1 = new Room(1, singleSet);
 		Room testRoom2 = new Room(1, singleSet);
@@ -123,10 +123,35 @@ class RoomServiceTest {
 	}
 
 	@Test
+	void saveRoomsShouldThrowExcWhenTheRoomToBeSavedHasInvalidValues() {
+		//given
+		Set<AbstractCommodity> commoditiesSetWithNullMembers = new HashSet<>(Arrays.asList(new Bed(SINGLE), null, new Toilet()));
+		Room roomWithNullCommodity = new Room(1, commoditiesSetWithNullMembers);
+		//then
+		assertThrows(ItemNotFoundException.class, () -> {
+			roomService.saveRooms(roomWithNullCommodity);
+		});
+	}
+
+	@Test
 	void deleteRoomShouldReturnTrueWhenDeletionIsSuccessful() {
 		//then
 		assertTrue(roomService.deleteRoom(doubleRoom));
 		assertFalse(roomService.findRooms().contains(doubleRoom));
+	}
+
+	@Test
+	void deleteRoomShouldThrowExcWhenRoomIsNullOrDoesNotExist(){
+		//given
+		Room nullRoom = null ;
+		Room nonExistentRoom = new Room(236,singleSet);
+		//then
+		assertThrows(ItemNotFoundException.class,()->{
+			roomService.deleteRoom(nullRoom);
+		});
+		assertThrows(ItemNotFoundException.class,()->{
+			roomService.deleteRoom(nonExistentRoom);
+		});
 	}
 
 	@Test
@@ -137,6 +162,17 @@ class RoomServiceTest {
 	}
 
 	@Test
+	void deleteRoomByIdShouldThrowExcWhenIdIsOutOfBoundsOrDoesntExist(){
+		//then
+		assertThrows(ItemNotFoundException.class,()->{
+			roomService.deleteRoomById(-1);
+		});
+		assertThrows(ItemNotFoundException.class,()->{
+			roomService.deleteRoomById(250);
+		});
+	}
+
+	@Test
 	void updateRoomShouldMakeChangesToTheRoomWithTheSpecifiedRoomId() {
 		//given
 		Room testRoom = new Room(roomService.getRoomById(1).getRoomId(), singleSet);
@@ -144,21 +180,28 @@ class RoomServiceTest {
 		roomService.updateRoom(testRoom);
 		//then
 		assertEquals(testRoom.getRoomCapacity(), roomService.getRoomById(1).getRoomCapacity());
+		assertEquals(testRoom.getCommodities(), roomService.getRoomById(1).getCommodities());
 
 	}
 
 	@Test
-	void updateRoomShouldThrowExceptionWhenThePassedRoomObjectHasInvalidValues(){
+	void updateRoomShouldThrowExceptionWhenThePassedRoomObjectHasInvalidValues() {
 		//given
-		Room nullRoom = null ;
-		Room notPresentRoom = new Room(234,singleSet);
+		Set<AbstractCommodity> commodities = new HashSet<>(Arrays.asList(new Bed(SINGLE), null, new Toilet()));
+		Room nullRoom = null;
+		Room notPresentRoom = new Room(234, singleSet);
+		Room roomWithNullCommodity = new Room(doubleRoom.getRoomId(), commodities); // doubleRoom already exists in the room service's repository.
+		roomRepository.save(roomWithNullCommodity);
 		//then
-		assertThrows(ItemNotFoundException.class,()->{
+		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.updateRoom(nullRoom);
 		});
 
-		assertThrows(ItemNotFoundException.class,()->{
+		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.updateRoom(notPresentRoom);
+		});
+		assertThrows(ItemNotFoundException.class, () -> {
+			roomService.updateRoom(roomWithNullCommodity);
 		});
 	}
 }

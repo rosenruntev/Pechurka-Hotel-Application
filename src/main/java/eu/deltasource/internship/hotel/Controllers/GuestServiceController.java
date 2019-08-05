@@ -5,9 +5,7 @@ import eu.deltasource.internship.hotel.domain.Guest;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import eu.deltasource.internship.hotel.service.GuestService;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
@@ -21,6 +19,7 @@ public class GuestServiceController {
 
 	private GuestServiceController() {
 	}
+
 	public GuestServiceController(GuestService guestService) {
 		this.guestService = guestService;
 	}
@@ -40,9 +39,8 @@ public class GuestServiceController {
 		return guestService.updateGuest(guestId, firstName, lastName, gender);
 	}
 
-	@RequestMapping(consumes = APPLICATION_JSON_VALUE) //tells it what to consume.
-
-	public void createGuest(int guestId, String firstName, String lastName, Gender gender) {
+	@RequestMapping(value = "GeuestService/updateGuest", method = RequestMethod.POST)
+	public void createGuest(@RequestBody int guestId, String firstName, String lastName, Gender gender) {
 		guestService.createGuest(guestId, firstName, lastName, gender);
 	}
 

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GuestServiceTest {
+class GuestServiceTest {
 
 
 	private GuestRepository guestRepository;
@@ -29,7 +29,7 @@ public class GuestServiceTest {
 	 * In addition creates a single test guest with a test first/last name , with male gender and Id = 1.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 
 		// Initialize Repositories
 		guestRepository = new GuestRepository();
@@ -46,9 +46,8 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void getGuestByIdShouldReturnTheGuestThatHasTheSpecifiedId() {
+	void getGuestByIdShouldReturnTheGuestThatHasTheSpecifiedId() {
 		//given
-
 		Guest expectedGuest;
 		//when
 		guestRepository.save(testGuest);
@@ -61,7 +60,7 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void getGuestByIdShouldThrowExceptionWhenIdIsInvalid() {
+	void getGuestByIdShouldThrowExceptionWhenIdIsInvalid() {
 		//given
 		int invalidId = -1;
 		int invalidId2 = guestService.getAllGuests().size() + 2;
@@ -75,7 +74,7 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void removeGuestByIdShouldDeleteTheGuestWithTheSpecifiedId() {
+	void removeGuestByIdShouldDeleteTheGuestWithTheSpecifiedId() {
 		//when
 		guestService.createGuests(testGuest);
 		guestId = guestService.getAllGuests().get(0).getGuestId();
@@ -85,7 +84,7 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void removeGuestByIdShouldThrowExceptionWhenIdIsInvalid() {
+	void removeGuestByIdShouldThrowExceptionWhenIdIsInvalid() {
 		//given
 		int invalidId = -1;
 		int invalidId2 = guestService.getAllGuests().size() + 2;
@@ -100,7 +99,7 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void testUpdateGuestSuccessScenario() {
+	void testUpdateGuestSuccessScenario() {
 		//given
 		String updateFName = "newGuestFName";
 		String updateLName = "newGuestLName";
@@ -115,7 +114,7 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void updateGuestShouldThrowExceptionWhenThePassedGuestInformationIsInvalid() {
+	void updateGuestShouldThrowExceptionWhenThePassedGuestInformationIsInvalid() {
 		//given
 		String updateFName = "newGuestFName";
 		String updateLName = "newGuestLName";
@@ -145,7 +144,7 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void testCreateGuest() {
+	void testCreateGuest() {
 		//when
 		guestService.createGuest(guestId, fName, lName, guestGender);
 		//then
@@ -159,7 +158,7 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void createGuestsShouldSaveANumberOfGuestsAtOnce() {
+	void createGuestsShouldSaveANumberOfGuestsAtOnce() {
 		//given
 		Guest guest1 = new Guest(1, "Ivan", "Poparov", Gender.MALE);
 		Guest guest2 = new Guest(1, "Gogata", "Velev", Gender.MALE);
@@ -175,7 +174,7 @@ public class GuestServiceTest {
 	}
 
 	@Test
-	public void createGuestsShouldThrowExceptionWhenTryingToAddAnArrayOfGuestsWithLenghtZero() {
+	void createGuestsShouldThrowExceptionWhenTryingToAddAnArrayOfGuestsWithLenghtZero() {
 		//given
 		Guest[] emptyArrayOfGuests = new Guest[0];
 		//when + then
@@ -183,6 +182,4 @@ public class GuestServiceTest {
 			guestService.createGuests(emptyArrayOfGuests);
 		});
 	}
-
-
 }

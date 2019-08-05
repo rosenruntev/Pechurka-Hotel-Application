@@ -2,9 +2,9 @@ package eu.deltasource.internship.hotel.Controllers;
 
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.service.RoomService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
@@ -16,8 +16,6 @@ public class RoomServiceController {
 
 	private RoomServiceController() {
 	}
-
-
 
 	public RoomServiceController(RoomService roomService) {
 		this.roomService = roomService;
@@ -33,12 +31,12 @@ public class RoomServiceController {
 		return roomService.getRoomById(id);
 	}
 
-	@RequestMapping("RoomService/saveRoom")
+	@RequestMapping(value = "GeuestService/updateGuest", method = RequestMethod.POST)
 	public Room CreateRoom(Room room) {
 		return roomService.saveRoom(room);
 	}
 
-	@RequestMapping("RoomService/saveRooms")
+	@RequestMapping(value = "GeuestService/updateGuest", method = RequestMethod.POST)
 	public void CreateRooms(Room... rooms) {
 		roomService.saveRooms(rooms);
 	}

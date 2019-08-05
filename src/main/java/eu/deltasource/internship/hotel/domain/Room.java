@@ -24,7 +24,7 @@ public class Room {
 		this.commodities = new HashSet<>();
 		updateCommodities(commodities);
 	}
-
+//todo :: Ask taner if assigning default value 0 to room id is a good idea .
 	public Room(Room room) {
 		this(room.roomId, room.getCommodities());
 	}
