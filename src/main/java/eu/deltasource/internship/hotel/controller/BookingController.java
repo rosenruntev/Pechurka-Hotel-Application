@@ -7,10 +7,12 @@ import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
 import eu.deltasource.internship.hotel.domain.commodity.Bed;
 import eu.deltasource.internship.hotel.domain.commodity.BedType;
-import eu.deltasource.internship.hotel.repository.*;
-import eu.deltasource.internship.hotel.service.*;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
+import eu.deltasource.internship.hotel.repository.BookingRepository;
+import eu.deltasource.internship.hotel.repository.GuestRepository;
+import eu.deltasource.internship.hotel.repository.RoomRepository;
+import eu.deltasource.internship.hotel.service.BookingService;
+import eu.deltasource.internship.hotel.service.GuestService;
+import eu.deltasource.internship.hotel.service.RoomService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,8 +55,8 @@ public class BookingController {
 
 	@RequestMapping(value = "/booking", method = POST)
 	public void createBooking(@RequestBody Booking booking) {
-		bookingService.createBooking(booking.getBookingId(), booking.getGuestId(), booking.getRoomId(),
-			booking.getNumberOfPeople(), booking.getFrom(), booking.getTo());
+		bookingService.createBooking(booking.getGuestId(), booking.getNumberOfPeople(),
+			booking.getFrom(), booking.getTo());
 	}
 
 	@RequestMapping(value = "/booking", method = GET)

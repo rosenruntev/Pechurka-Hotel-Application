@@ -71,9 +71,9 @@ public class BookingService {
 	/**
 	 * Updates dates of booking with particular id
 	 *
-	 * @param bookingId       the id of the booking
-	 * @param fromDate the date of accommodation
-	 * @param toDate   the date of leaving
+	 * @param bookingId the id of the booking
+	 * @param fromDate  the date of accommodation
+	 * @param toDate    the date of leaving
 	 */
 	public void updateBookingDatesById(int bookingId, int guestId, LocalDate fromDate, LocalDate toDate) {
 		Booking booking = getBookingById(bookingId);
