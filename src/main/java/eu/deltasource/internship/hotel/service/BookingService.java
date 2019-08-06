@@ -39,14 +39,17 @@ public class BookingService {
 	 * @param numberOfPeople the room's capacity
 	 * @param fromDate       the date of accommodation
 	 * @param toDate         the date of leaving
+	 * @return the id of the booking
 	 */
-	public void createBooking(int guestId, int numberOfPeople, LocalDate fromDate, LocalDate toDate) {
+	public int createBooking(int guestId, int numberOfPeople, LocalDate fromDate, LocalDate toDate) {
 		validateGuestId(guestId);
 		Room room = findAvailableRoom(fromDate, toDate, numberOfPeople);
 		validateDates(fromDate, toDate);
 		// We are always passing 1 because booking's id is generated in booking repository
 		Booking newBooking = new Booking(1, guestId, room.getRoomId(), numberOfPeople, fromDate, toDate);
 		bookingRepository.save(newBooking);
+
+		return newBooking.getBookingId();
 	}
 
 	/**
