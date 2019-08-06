@@ -18,12 +18,6 @@ public class GuestRepository {
 
 	private final List<Guest> repository;
 
-	//todo remove this constructor
-	public GuestRepository(Guest... newGuests) {
-		repository = new ArrayList<>();
-		Collections.addAll(repository, newGuests);
-	}
-
 	/**
 	 * Default constructor, which initializes the repository
 	 * as an empty ArrayList.
