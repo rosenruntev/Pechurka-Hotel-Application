@@ -2,6 +2,7 @@ package eu.deltasource.internship.hotel.repository;
 
 import eu.deltasource.internship.hotel.domain.Booking;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
  */
+@Repository
 public class BookingRepository {
 
 	private final List<Booking> repository;
@@ -57,6 +59,18 @@ public class BookingRepository {
 	}
 
 	/**
+	 * Generates IDs for the bookings.
+	 *
+	 * @return Returns the newly generated id.
+	 */
+	private int idGenerator() {
+		if (count() == 0) {
+			return count() + 1;
+		}
+		return repository.get(count() - 1).getBookingId() + 1;
+	}
+
+	/**
 	 * Saves the item in the repository with a new id
 	 * using the item count in the repository
 	 */
@@ -91,6 +105,7 @@ public class BookingRepository {
 	 * All validations should be done in the service layer!!!
 	 */
 	public Booking updateDates(Booking item) {
+
 		for (Booking booking : repository) {
 			if (booking.getBookingId() == item.getBookingId()) {
 				booking.setBookingDates(item.getFrom(), item.getTo());
@@ -139,13 +154,5 @@ public class BookingRepository {
 	 */
 	public int count() {
 		return repository.size();
-	}
-
-	private int idGenerator() {
-		if (count() == 0) {
-			return count() + 1;
-		}
-
-		return repository.get(count() - 1).getBookingId() + 1;
 	}
 }

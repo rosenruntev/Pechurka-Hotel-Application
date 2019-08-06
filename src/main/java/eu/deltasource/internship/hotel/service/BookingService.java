@@ -4,6 +4,7 @@ import eu.deltasource.internship.hotel.domain.Booking;
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.exception.*;
 import eu.deltasource.internship.hotel.repository.BookingRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;

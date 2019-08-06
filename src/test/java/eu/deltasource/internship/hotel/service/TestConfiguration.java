@@ -71,6 +71,5 @@ public class TestConfiguration {
 
 		// adds the rooms to the repository, which then can be accesses from the RoomService
 		roomService.saveRooms(doubleRoom, singleRoom, kingSizeRoom, threePeopleKingSizeRoom, fourPersonRoom, fivePersonRoom);
-
 	}
 }

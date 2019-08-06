@@ -2,6 +2,8 @@ package eu.deltasource.internship.hotel.repository;
 
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
+import org.springframework.stereotype.Repository;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,7 @@ import java.util.List;
 /**
  * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
  */
+@Repository
 public class RoomRepository {
 
 	private final List<Room> repository;
@@ -55,6 +58,19 @@ public class RoomRepository {
 				return new Room(item);
 		}
 		throw new ItemNotFoundException("A Room with id: " + id + " was not found!");
+	}
+
+	/**
+	 * Generates IDs for the rooms.
+	 *
+	 * @return Returns the newly generated ID.
+	 */
+	private int idGenerator() {
+		if (count() == 0) {
+			return count() + 1;
+		}
+
+		return repository.get(count() - 1).getRoomId() + 1;
 	}
 
 	/**
@@ -137,13 +153,5 @@ public class RoomRepository {
 	 */
 	public int count() {
 		return repository.size();
-	}
-
-	private int idGenerator() {
-		if (count() == 0) {
-			return count() + 1;
-		}
-
-		return repository.get(count() - 1).getRoomId() + 1;
 	}
 }
