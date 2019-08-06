@@ -136,6 +136,12 @@ public class BookingServiceTest {
 
 		// Then
 		assertEquals(true, bookingService.existsById(1));
+		Booking booking = bookingService.getBookingById(1);
+		assertEquals(1, booking.getGuestId());
+		assertEquals(1, booking.getRoomId());
+		assertEquals(1, booking.getNumberOfPeople());
+		assertEquals(today, booking.getFrom());
+		assertEquals(afterFiveDays, booking.getTo());
 	}
 
 	@Test
@@ -238,5 +244,6 @@ public class BookingServiceTest {
 
 		// Then
 		assertEquals(false, bookingService.existsById(1));
+		assertEquals(0, bookingRepository.count());
 	}
 }
