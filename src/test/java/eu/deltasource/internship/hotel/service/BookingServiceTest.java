@@ -7,6 +7,9 @@ import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
 import eu.deltasource.internship.hotel.domain.commodity.Bed;
 import eu.deltasource.internship.hotel.domain.commodity.BedType;
+import eu.deltasource.internship.hotel.exception.AvailableRoomNotFoundException;
+import eu.deltasource.internship.hotel.exception.InvalidBookingDatesException;
+import eu.deltasource.internship.hotel.exception.InvalidGuestIdException;
 import eu.deltasource.internship.hotel.repository.BookingRepository;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
@@ -24,13 +27,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class BookingServiceTest {
 
 	private RoomRepository roomRepository;
-	private RoomService roomService;
 	private GuestRepository guestRepository;
-	private GuestService guestService;
 	private BookingRepository bookingRepository;
+
+	private RoomService roomService;
+	private GuestService guestService;
 	private BookingService bookingService;
-	private LocalDate generalBookingFromDate;
-	private LocalDate generalBookingToDate;
+
+	private LocalDate today;
+	private LocalDate afterFiveDays;
 
 	@BeforeEach
 	public void setUp() {
@@ -42,159 +47,92 @@ public class BookingServiceTest {
 		guestService = new GuestService(guestRepository);
 		bookingService = new BookingService(bookingRepository, roomService, guestService);
 
-		generalBookingFromDate = LocalDate.now();
-		generalBookingToDate = generalBookingFromDate.plusDays(5);
+		today = LocalDate.now();
+		afterFiveDays = today.plusDays(5);
 	}
 
-	@Test
-	public void createBookingShouldThrowExceptionIfBookingIdIsNegative() {
-		// Given
-		// When
-		// Then
-		assertThrows(IllegalArgumentException.class, () -> {
-			bookingService.createBooking(-1, 1, 1, 1,
-				generalBookingFromDate, generalBookingToDate);
-		});
-	}
-
-	@Test
-	public void createBookingShouldThrowExceptionIfBookingIdAlreadyExists() {
-		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
-
+	private void addSimpleRoomWithCommodity() {
 		Set<AbstractCommodity> commodities = new HashSet<>();
-		commodities.add(new Bed(BedType.SINGLE));
+		Bed bed = new Bed(BedType.SINGLE);
+		commodities.add(bed);
 		roomService.saveRoom(new Room(1, commodities));
+	}
 
-		bookingService.createBooking(1, 1, 1, 1, generalBookingFromDate,
-			generalBookingToDate);
+	private void addSimpleGuest() {
+		// TODO: use GuestService to add the guest after merge
+		Guest guest = new Guest(1, "first name", "last name", Gender.MALE);
+		guestRepository.save(guest);
+	}
 
+	@Test
+	public void createBookingShouldThrowExceptionIfGuestIdIsInvalid() {
+		// Given
 		// When
 		// Then
-		assertThrows(IllegalArgumentException.class, () -> {
-			bookingService.createBooking(1, 1, 1, 1,
-				LocalDate.now(), LocalDate.now().plusDays(1));
+		assertThrows(InvalidGuestIdException.class, () -> {
+			bookingService.createBooking(-1, 1, today, afterFiveDays);
 		});
 	}
 
 	@Test
 	public void createBookingShouldThrowExceptionIfGuestDoesNotExist() {
 		// Given
-		Set<AbstractCommodity> commodities = new HashSet<>();
-		commodities.add(new Bed(BedType.SINGLE));
-		roomService.saveRoom(new Room(1, commodities));
-
 		// When
 		// Then
-		assertThrows(IllegalArgumentException.class, () -> {
-			bookingService.createBooking(1, 1, 1, 1,
-				generalBookingFromDate, generalBookingToDate);
-		});
-	}
-
-	@Test
-	public void createBookingShouldThrowExceptionIfRoomDoesNotExist() {
-		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
-
-		// When
-		// Then
-		assertThrows(IllegalArgumentException.class, () -> {
-			bookingService.createBooking(1, 1, 1, 1,
-				generalBookingFromDate, generalBookingToDate);
-		});
-	}
-
-	@Test
-	public void createBookingShouldThrowExceptionIfRoomHasDifferentCapacity() {
-		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
-
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
-
-		// When
-		// Then
-		assertThrows(IllegalArgumentException.class, () -> {
-			bookingService.createBooking(1, 1, 1, 1,
-				generalBookingFromDate, generalBookingToDate);
+		assertThrows(InvalidGuestIdException.class, () -> {
+			bookingService.createBooking(1, 1, today, afterFiveDays);
 		});
 	}
 
 	@Test
 	public void createBookingShouldThrowExceptionIfDatesAreEqual() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
-
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
 
 		// When
 		// Then
-		assertThrows(IllegalArgumentException.class, () -> {
-			bookingService.createBooking(1, 1, 1, 2,
-				LocalDate.now(), LocalDate.now());
+		assertThrows(InvalidBookingDatesException.class, () -> {
+			bookingService.createBooking(1, 1, today, today);
 		});
 	}
 
 	@Test
 	public void createBookingShouldThrowExceptionIfFromDateIsAfterToDate() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
-
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
 
 		// When
 		// Then
-		assertThrows(IllegalArgumentException.class, () -> {
-			bookingService.createBooking(1, 1, 1, 2,
-				LocalDate.now().plusDays(1), LocalDate.now());
+		assertThrows(InvalidBookingDatesException.class, () -> {
+			bookingService.createBooking(1, 1, afterFiveDays, today);
 		});
 	}
 
 	@Test
-	public void createBookingShouldThrowExceptionIfRoomIsBookedForThatPeriod() {
+	public void createBookingShouldThrowExceptionIfThereAreNotAvailableRooms() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
-
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
-
-		bookingService.createBooking(1, 1, 1, 2,
-			generalBookingFromDate, generalBookingToDate);
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
 
 		// When
+		bookingService.createBooking(1, 1, today, afterFiveDays);
+
 		// Then
-		assertThrows(IllegalArgumentException.class, () -> {
-			bookingService.createBooking(2, 1, 1, 2,
-				generalBookingFromDate, generalBookingToDate);
+		assertThrows(AvailableRoomNotFoundException.class, () -> {
+			bookingService.createBooking(1, 1, today, afterFiveDays);
 		});
 	}
 
 	@Test
 	public void createBookingShouldCreateNewBookingInBookingRepository() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
-
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
 
 		// When
-		bookingService.createBooking(1, 1, 1, 2,
-			generalBookingFromDate, generalBookingToDate);
+		bookingService.createBooking(1, 1, today, afterFiveDays);
 
 		// Then
 		assertEquals(true, bookingService.existsById(1));
@@ -203,101 +141,97 @@ public class BookingServiceTest {
 	@Test
 	public void getAllBookingsShouldReturnListWithAllBookings() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
+		bookingService.createBooking(1, 1,
+			today, afterFiveDays);
 
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
-
-		bookingService.createBooking(1, 1, 1, 2,
-			generalBookingFromDate, generalBookingToDate);
+		LocalDate anotherFromDate = today.plusDays(10);
+		LocalDate anotherToDate = today.plusDays(20);
+		bookingService.createBooking(1, 1,
+			anotherFromDate, anotherToDate);
 
 		// When
 		List<Booking> bookings = bookingService.getAllBookings();
 
 		// Then
-		assertEquals(1, bookings.size());
+		assertEquals(2, bookings.size());
+		assertEquals(true, bookingService.existsById(1));
+		assertEquals(true, bookingService.existsById(2));
 	}
 
 	@Test
 	public void getBookingByIdShouldReturnTheBookingWithParticularId() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
-
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
-
-		bookingService.createBooking(1, 1, 1, 2,
-			generalBookingFromDate, generalBookingToDate);
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
+		bookingService.createBooking(1, 1, today, afterFiveDays);
 
 		// When
 		Booking booking = bookingService.getBookingById(1);
 
 		// Then
 		assertEquals(1, booking.getBookingId());
+		assertEquals(1, booking.getGuestId());
+		assertEquals(1, booking.getNumberOfPeople());
+		assertEquals(today, booking.getFrom());
+		assertEquals(afterFiveDays, booking.getTo());
 	}
 
 	@Test
 	public void updateBookingDatesByIdShouldChangeBookingDates() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
+		LocalDate afterTenDays = today.plusDays(10);
+		LocalDate afterFifteenDays = today.plusDays(15);
+		LocalDate afterTwentyDays = today.plusDays(20);
+		LocalDate afterTwentyFiveDays = today.plusDays(25);
 
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
-
-		bookingService.createBooking(1, 1, 1, 2,
-			generalBookingFromDate, generalBookingToDate);
+		bookingService.createBooking(1, 1,
+			afterTenDays, afterFifteenDays);
 
 		// When
-		LocalDate newFromDate = generalBookingFromDate.plusDays(20);
-		LocalDate newToDate = generalBookingToDate.plusDays(20);
-		bookingService.updateBookingDatesById(1, newFromDate, newToDate);
+		bookingService.updateBookingDatesById(1, 1,
+			today, afterFiveDays);
+
+		bookingService.updateBookingDatesById(1, 1,
+			afterTwentyDays, afterTwentyFiveDays);
 
 		// Then
-		assertEquals(newFromDate, bookingService.getBookingById(1).getFrom());
-		assertEquals(newToDate, bookingService.getBookingById(1).getTo());
+		Booking booking = bookingService.getBookingById(1);
+		assertEquals(afterTwentyDays, booking.getFrom());
+		assertEquals(afterTwentyFiveDays, booking.getTo());
 	}
 
 	@Test
 	public void updateBookingShouldBeAbleToUpdateDatesThatOverlapWithPreviousDates() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
 
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
-
-		bookingService.createBooking(1, 1, 1, 2,
-			generalBookingFromDate, generalBookingToDate);
+		bookingService.createBooking(1, 1,
+			today, afterFiveDays);
 
 		// When
-		LocalDate newFromDate = generalBookingFromDate.plusDays(1);
-		LocalDate newToDate = generalBookingToDate.minusDays(1);
-		bookingService.updateBookingDatesById(1, newFromDate, newToDate);
+		LocalDate newFromDate = today.plusDays(1);
+		LocalDate newToDate = LocalDate.now().plusDays(4);
+		bookingService.updateBookingDatesById(1, 1, newFromDate, newToDate);
 
 		// Then
-		assertEquals(newFromDate, bookingService.getBookingById(1).getFrom());
-		assertEquals(newToDate, bookingService.getBookingById(1).getTo());
+		Booking booking = bookingService.getBookingById(1);
+		assertEquals(newFromDate, booking.getFrom());
+		assertEquals(newToDate, booking.getTo());
 	}
 
 	@Test
 	public void removeBookingByIdShouldRemoveTheBooking() {
 		// Given
-		// TODO: use GuestService to add the guest after merge
-		guestRepository.save(new Guest(1, "first name", "last name", Gender.MALE));
+		addSimpleRoomWithCommodity();
+		addSimpleGuest();
 
-		Set<AbstractCommodity> commodities = new HashSet();
-		commodities.add(new Bed(BedType.DOUBLE));
-		roomService.saveRoom(new Room(1, commodities));
-
-		bookingService.createBooking(1, 1, 1, 2,
-			generalBookingFromDate, generalBookingToDate);
+		bookingService.createBooking(1, 1,
+			today, afterFiveDays);
 
 		// When
 		bookingService.removeBookingById(1);
