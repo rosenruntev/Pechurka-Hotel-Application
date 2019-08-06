@@ -13,6 +13,9 @@ import eu.deltasource.internship.hotel.repository.RoomRepository;
 import eu.deltasource.internship.hotel.service.BookingService;
 import eu.deltasource.internship.hotel.service.GuestService;
 import eu.deltasource.internship.hotel.service.RoomService;
+import eu.deltasource.internship.hotel.transferobject.BookingTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,45 +25,42 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
+@RequestMapping(value = "/bookings")
 public class BookingController {
 
-	private BookingRepository bookingRepository;
-	private GuestRepository guestRepository;
-	private RoomRepository roomRepository;
-
 	private BookingService bookingService;
-	private GuestService guestService;
-	private RoomService roomService;
 
-	public BookingController() {
-		bookingRepository = new BookingRepository();
-		guestRepository = new GuestRepository();
-		roomRepository = new RoomRepository();
-
-		guestService = new GuestService(guestRepository);
-		roomService = new RoomService(roomRepository);
-		bookingService = new BookingService(bookingRepository, roomService, guestService);
-
-		Set<AbstractCommodity> commodities = new HashSet<>();
-		commodities.add(new Bed(BedType.SINGLE));
-		roomRepository.save(new Room(1, commodities));
-		guestRepository.save(new Guest(1, "f", "l", Gender.MALE));
-		bookingRepository.save(new Booking(1, 1, 1,
-			1, LocalDate.now(), LocalDate.now().plusMonths(1)));
-	}
-
-	@RequestMapping(value = "/booking", method = POST)
+	@RequestMapping(method = POST)
 	public void createBooking(@RequestBody Booking booking) {
 		bookingService.createBooking(booking.getGuestId(), booking.getNumberOfPeople(),
 			booking.getFrom(), booking.getTo());
 	}
 
-	@RequestMapping(value = "/booking", method = GET)
+	@RequestMapping(method = GET)
 	public List<Booking> getAllBookings() {
 		return bookingService.getAllBookings();
+	}
+
+	@RequestMapping(value = "/{id}", method = GET)
+	public Booking getBookingById(@PathVariable int id) {
+		return bookingService.getBookingById(id);
+	}
+
+	@RequestMapping(value = "/{id}", method = PUT)
+	public void updateBookingDatesById(@PathVariable int id,
+									   @RequestBody BookingTO bookingTO) {
+		int guestId = bookingTO.getGuestId();
+		LocalDate fromDate = bookingTO.getFromDate();
+		LocalDate toDate = bookingTO.getToDate();
+
+		bookingService.updateBookingDatesById(id, guestId, fromDate, toDate);
+	}
+
+	@RequestMapping(value = "/{id}", method = DELETE)
+	public void removeBooking(@PathVariable int id) {
+		bookingService.removeBookingById(id);
 	}
 }
