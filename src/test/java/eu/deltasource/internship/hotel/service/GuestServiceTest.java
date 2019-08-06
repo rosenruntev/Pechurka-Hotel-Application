@@ -3,6 +3,7 @@ package eu.deltasource.internship.hotel.service;
 import eu.deltasource.internship.hotel.domain.Gender;
 import eu.deltasource.internship.hotel.domain.Guest;
 import eu.deltasource.internship.hotel.exception.FailedInitializationException;
+import eu.deltasource.internship.hotel.exception.InvalidItemException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,13 +17,7 @@ class GuestServiceTest {
 
 
 	private GuestRepository guestRepository;
-
 	private GuestService guestService;
-
-	private String fName;
-	private String lName;
-	private Gender guestGender;
-	private int guestId;
 	private Guest testGuest;
 
 
@@ -32,7 +27,10 @@ class GuestServiceTest {
 	 */
 	@BeforeEach
 	void setUp() {
-
+		int guestId;
+		String fName;
+		String lName;
+		Gender guestGender;
 		// Initialize Repositories
 		guestRepository = new GuestRepository();
 
@@ -48,24 +46,24 @@ class GuestServiceTest {
 	}
 
 	@Test
-	void getGuestByIdShouldReturnTheGuestThatHasTheSpecifiedId() {
+	void getGuestById_ShouldReturnTheGuest_WhoHasTheSpecifiedId() {
 		//given
 		int guestId;
 		Guest expectedGuest;
 		//when
 		guestRepository.save(testGuest);
-		guestId = guestService.getGuestById(testGuest.getGuestId()).getGuestId();
+		guestId = testGuest.getGuestId();
 		expectedGuest = guestService.getGuestById(guestId);
 		//then
-		assertEquals(testGuest.getFirstName(),guestService.getGuestById(guestId).getFirstName());
-		assertEquals(testGuest.getLastName(),guestService.getGuestById(guestId).getLastName());
-		assertEquals(testGuest.getGuestId(),guestId);
-		assertEquals(testGuest.getGender(),guestGender);
+		assertEquals(testGuest.getFirstName(), guestService.getGuestById(guestId).getFirstName());
+		assertEquals(testGuest.getLastName(), guestService.getGuestById(guestId).getLastName());
+		assertEquals(testGuest.getGuestId(), guestId);
+		assertEquals(testGuest.getGender(), testGuest.getGender());
 		assertEquals(expectedGuest, testGuest);
 	}
 
 	@Test
-	void getGuestByIdShouldThrowExceptionWhenIdIsInvalid() {
+	void getGuestById_ShouldThrowException_WhenIdIsInvalid() {
 		//given
 		int invalidId = -1;
 		int invalidId2 = guestService.getAllGuests().size() + 2;
@@ -79,7 +77,9 @@ class GuestServiceTest {
 	}
 
 	@Test
-	void removeGuestByIdShouldDeleteTheGuestWithTheSpecifiedId() {
+	void removeGuestById_ShouldDeleteTheGuest_WithTheSpecifiedId() {
+		//given
+		int guestId;
 		//when
 		guestService.createGuests(testGuest);
 		guestId = guestService.getAllGuests().get(0).getGuestId();
@@ -89,7 +89,7 @@ class GuestServiceTest {
 	}
 
 	@Test
-	void removeGuestByIdShouldThrowExceptionWhenIdIsInvalid() {
+	void removeGuestById_ShouldThrowException_WhenIdIsInvalid() {
 		//given
 		int invalidId = -1;
 		int invalidId2 = guestService.getAllGuests().size() + 2;
@@ -104,25 +104,25 @@ class GuestServiceTest {
 	}
 
 	@Test
-	void testUpdateGuestSuccessScenario() {
+	void updateGuest_ShouldUpdateTheGuestData() {
 		//given
 		String updateFName = "newGuestFName";
 		String updateLName = "newGuestLName";
 		int newGuestId = 1;
 		Gender newGuestGender = Gender.FEMALE;
 		//when
-		guestService.createGuest(guestId, fName, lName, guestGender);
+		guestService.createGuest(testGuest.getGuestId(), testGuest.getFirstName(), testGuest.getLastName(), testGuest.getGender());
 		Guest newGuest = new Guest(newGuestId, updateFName, updateLName, newGuestGender);
-		guestService.updateGuest(newGuestId,updateFName,updateLName,newGuestGender);
+		guestService.updateGuest(newGuestId, updateFName, updateLName, newGuestGender);
 		//then
 		assertEquals(guestService.getGuestById(newGuestId), newGuest);
-		assertEquals(newGuest.getFirstName(),guestService.getGuestById(newGuestId).getFirstName());
-		assertEquals(newGuest.getLastName(),guestService.getGuestById(newGuestId).getLastName());
-		assertEquals(newGuest.getGender(),guestService.getGuestById(newGuestId).getGender());
+		assertEquals(newGuest.getFirstName(), guestService.getGuestById(newGuestId).getFirstName());
+		assertEquals(newGuest.getLastName(), guestService.getGuestById(newGuestId).getLastName());
+		assertEquals(newGuest.getGender(), guestService.getGuestById(newGuestId).getGender());
 	}
 
 	@Test
-	void updateGuestShouldThrowExceptionWhenThePassedGuestInformationIsInvalid() {
+	void updateGuest_ShouldThrowException_WhenThePassedGuestInformationIsInvalid() {
 		//given
 		String updateFName = "newGuestFName";
 		String updateLName = "newGuestLName";
@@ -130,27 +130,28 @@ class GuestServiceTest {
 		String invalidLName = "";
 		int invalidId = -1;
 		//when
-		guestService.createGuest(guestId, fName, lName, guestGender);
+		guestService.createGuest(testGuest.getGuestId(), testGuest.getFirstName(), testGuest.getLastName(), testGuest.getGender());
 		//then
 		assertThrows(FailedInitializationException.class, () -> {
-			guestService.updateGuest(guestId, invalidFName, updateLName, guestGender);
+			guestService.updateGuest(testGuest.getGuestId(), invalidFName, updateLName, Gender.MALE);
 		});
 		assertThrows(FailedInitializationException.class, () -> {
-			guestService.updateGuest(guestId, updateFName, invalidLName, guestGender);
+			guestService.updateGuest(testGuest.getGuestId(), updateFName, invalidLName, Gender.MALE);
 		});
-		assertThrows(ItemNotFoundException.class, () -> {
-			guestService.updateGuest(invalidId, updateFName, updateLName, guestGender);
+		assertThrows(InvalidItemException.class, () -> {
+			guestService.updateGuest(invalidId, updateFName, updateLName, Gender.MALE);
 		});
 	}
 
 	@Test
-	void testCreateGuest() {
+	void createGuest_ShouldCreateNewGuest() {
+		//given
 		//when
-		guestService.createGuest(guestId, fName, lName, guestGender);
+		guestService.createGuest(testGuest.getGuestId(), testGuest.getFirstName(), testGuest.getLastName(), testGuest.getGender());
 		//then
-		assert (guestService.getGuestById(guestId).equals(testGuest));
-		assertThrows(ItemNotFoundException.class, () -> {
-			guestService.createGuest(-1, fName, lName, guestGender);
+		assertEquals(guestService.getGuestById(testGuest.getGuestId()), testGuest);
+		assertThrows(InvalidItemException.class, () -> {
+			guestService.createGuest(-1, testGuest.getFirstName(), testGuest.getLastName(), Gender.MALE);
 		});
 		assertThrows(FailedInitializationException.class, () -> {
 			final Guest failedInitializationGuest = new Guest(1, null, null, Gender.MALE);
@@ -158,7 +159,7 @@ class GuestServiceTest {
 	}
 
 	@Test
-	void createGuestsShouldSaveANumberOfGuestsAtOnce() {
+	void createGuests_ShouldCreateAMultipleGuestsAtOnce() {
 		//given
 		Guest guest1 = new Guest(1, "Ivan", "Poparov", Gender.MALE);
 		Guest guest2 = new Guest(1, "Gogata", "Velev", Gender.MALE);
@@ -167,15 +168,15 @@ class GuestServiceTest {
 		//when
 		guestService.createGuests(guest1, guest2, guest3);
 		//then
-		assertEquals(guestService.getAllGuests().size(),expectedRepositorySize);
-		assertTrue(guestService.getAllGuests().containsAll(Arrays.asList(guest1,guest2,guest3)));
+		assertEquals(guestService.getAllGuests().size(), expectedRepositorySize);
+		assertTrue(guestService.getAllGuests().containsAll(Arrays.asList(guest1, guest2, guest3)));
 	}
 
 	@Test
-	void createGuestsShouldThrowExceptionWhenTryingToAddAnArrayOfGuestsWithLenghtZero() {
+	void createGuests_ShouldThrowException_ZeroGuestsInArrayFormat() {
 		//given
 		Guest[] emptyArrayOfGuests = new Guest[0];
-		//when + then
+		//then
 		assertThrows(ItemNotFoundException.class, () -> {
 			guestService.createGuests(emptyArrayOfGuests);
 		});

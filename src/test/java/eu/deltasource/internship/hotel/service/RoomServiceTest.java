@@ -20,28 +20,14 @@ class RoomServiceTest {
 
 	private RoomService roomService;
 	private RoomRepository roomRepository;
+
 	private Room doubleRoom;
-	private Room threePeopleKingSizeRoom;
-
-	// commodities for a single room
-	private static final Set<AbstractCommodity> singleSet = new HashSet<>(Arrays.asList(new Bed(SINGLE), new Toilet(), new Shower()));
-
-	// commodities for a double room with king size bed
-	private static final Set<AbstractCommodity> kingSizeSet = new HashSet<>(Arrays.asList(new Bed(BedType.KING_SIZE), new Toilet(), new Shower()));
-
-	// commodities for a 3 person room with a king size and a single
-	private static final Set<AbstractCommodity> threePeopleKingSizeSet = new HashSet<>(Arrays.asList(new Bed(BedType.KING_SIZE), new Bed(SINGLE), new Toilet(), new Shower()));
-
-	// commodities for a 4 person room with 2 doubles
-	private static final Set<AbstractCommodity> fourPersonSet = new HashSet<>(Arrays.asList(new Bed(BedType.DOUBLE), new Bed(BedType.DOUBLE), new Toilet(), new Shower()));
-
-	// commodities for a 4 person room with 2 doubles
-	private static final Set<AbstractCommodity> fivePersonSet = new HashSet<>(Arrays.asList(new Bed(BedType.KING_SIZE), new Bed(BedType.DOUBLE), new Bed(SINGLE), new Toilet(), new Toilet(), new Shower()));
+	private Room singleRoom;
 
 	/**
 	 * Creates an empty room repository .
-	 * In addition it creates  6 rooms : a double , a single , king size ,three people king size
-	 * ,four people room ,a 5 people room and adds them to the room repository.
+	 * In addition it creates  3 rooms : a double , a single , king size and
+	 * adds them to the room repository.
 	 * Finally it adds the room repository to a room service.
 	 */
 	@BeforeEach
@@ -59,21 +45,23 @@ class RoomServiceTest {
 		AbstractCommodity shower = new Shower();
 		Set<AbstractCommodity> doubleSet = new HashSet<>(Arrays.asList(doubleBed, toilet, shower));
 
+		// commodities for a single room
+		final Set<AbstractCommodity> singleSet = new HashSet<>(Arrays.asList(new Bed(SINGLE), new Toilet(), new Shower()));
+
+		// commodities for a double room with king size bed
+		final Set<AbstractCommodity> kingSizeSet = new HashSet<>(Arrays.asList(new Bed(BedType.KING_SIZE), new Toilet(), new Shower()));
 
 		// create some rooms
 		doubleRoom = new Room(1, doubleSet);
-		Room singleRoom = new Room(1, singleSet);
-		Room kingSizeRoom = new Room(1, kingSizeSet);
-		threePeopleKingSizeRoom = new Room(1, threePeopleKingSizeSet);
-		Room fourPersonRoom = new Room(1, fourPersonSet);
-		Room fivePersonRoom = new Room(1, fivePersonSet);
+		singleRoom = new Room(1, singleSet);
+		Room doubleRoomWithKingSize = new Room(1, kingSizeSet);
 
 		// adds the rooms to the repository, which then can be accesses from the RoomService
-		roomService.saveRooms(doubleRoom, singleRoom, kingSizeRoom, threePeopleKingSizeRoom, fourPersonRoom, fivePersonRoom);
+		roomService.saveRooms(doubleRoom, singleRoom, doubleRoomWithKingSize);
 	}
 
 	@Test
-	void getRoomByIdShouldReturnAReferenceToTheRoomWeAreLookingFor() {
+	void getRoomById_ShouldReturnTheSoughtAfterRoom() {
 		//given
 		Room actualRoom;
 		int doubleRoomCapacity = 2;
@@ -87,19 +75,19 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void getRoomByIdShouldThrowExceptionWhenTheProvidedIndexIsOutOfBounds() {
+	void getRoomById_ShouldThrowException_WhenIdIsNoneExistent() {
 		//given
-		int nonExistingId = 7;
+		int noneExistingId = 7;
 		//then
 		assertThrows(ItemNotFoundException.class, () -> {
-			roomService.getRoomById(nonExistingId);
+			roomService.getRoomById(noneExistingId);
 		});
 	}
 
 	@Test
-	void saveRoomShouldReturnTheCurrentlyAddedRoom() {
+	void saveRoom_ShouldReturnTheCurrentlyAddedRoom() {
 		//given
-		Room testRoom = new Room(1, singleSet);
+		Room testRoom = new Room(1, singleRoom.getCommodities());
 		Room actualValue;
 		//when
 		actualValue = roomService.saveRoom(testRoom);
@@ -108,7 +96,7 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void saveRoomShouldThrowExcWhenRoomIsNull() {
+	void saveRoom_ShouldThrowException_WhenRoomIsNull() {
 		//given
 		Room nullRoom = null;
 		//then
@@ -118,11 +106,11 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void saveRooms_SuccessScenario() {
+	void saveRooms_ShouldCreateMultipleRoomsAtOnce() {
 		//given
-		Room testRoom1 = new Room(1, singleSet);
-		Room testRoom2 = new Room(1, singleSet);
-		Room testRoom3 = new Room(1, singleSet);
+		Room testRoom1 = new Room(1, singleRoom.getCommodities());
+		Room testRoom2 = new Room(1, singleRoom.getCommodities());
+		Room testRoom3 = new Room(1, singleRoom.getCommodities());
 		//when
 		roomService.saveRooms(testRoom1, testRoom2, testRoom3);
 		//then
@@ -130,7 +118,7 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void saveRoomsShouldThrowExcWhenTheRoomToBeSavedHasInvalidValues() {
+	void saveRooms_ShouldThrowException_WhenTheRoomToSaveHasInvalidValues() {
 		//given
 		Set<AbstractCommodity> commoditiesSetWithNullMembers = new HashSet<>(Arrays.asList(new Bed(SINGLE), null, new Toilet()));
 		Room roomWithNullCommodity = new Room(1, commoditiesSetWithNullMembers);
@@ -141,18 +129,18 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void deleteRoomShouldReturnTrueWhenDeletionIsSuccessful() {
+	void deleteRoom_ShouldReturnTrue_WhenDeletionIsSuccessful() {
 		//then
 		assertTrue(roomService.deleteRoom(doubleRoom));
 		assertFalse(roomService.findRooms().contains(doubleRoom));
 	}
 
 	@Test
-	void deleteRoomShouldThrowExcWhenRoomIsNullOrDoesNotExist() {
+	void deleteRoom_ShouldThrowException_WhenRoomIsNull_Or_DoesNotExist() {
 		//given
 		Room nullRoom = null;
-		Room nonExistentRoom = new Room(236, singleSet);
-		//when + then
+		Room nonExistentRoom = new Room(236, singleRoom.getCommodities());
+		//then
 		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.deleteRoom(nullRoom);
 		});
@@ -162,16 +150,16 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void deleteRoomByIdShouldReturnTrueWhenDeletionIsSuccessful() {
+	void deleteRoomById_ShouldReturnTrue_WhenDeletionIsSuccessful() {
 		//given
 		//when
 		//then
-		assertTrue(roomService.deleteRoomById(threePeopleKingSizeRoom.getRoomId()));
-		assertFalse(roomService.findRooms().contains(threePeopleKingSizeRoom));
+		assertTrue(roomService.deleteRoomById(doubleRoom.getRoomId()));
+		assertFalse(roomService.findRooms().contains(doubleRoom));
 	}
 
 	@Test
-	void deleteRoomByIdShouldThrowExcWhenIdIsOutOfBoundsOrDoesNotExist() {
+	void deleteRoomById_ShouldThrowException_WhenIdIsOutOfBounds_Or_DoesNotExist() {
 		//given
 		//when
 		//then
@@ -184,11 +172,11 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void updateRoomShouldMakeChangesToTheRoomWithTheSpecifiedRoomId() {
+	void updateRoom_ShouldMakeChangesToTheSpecifiedRoom() {
 		//given
 		int roomId = 1;
 		int oldRoomCapacity = roomService.getRoomById(roomId).getRoomCapacity();
-		Room testRoom = new Room(roomService.getRoomById(roomId).getRoomId(), singleSet);
+		Room testRoom = new Room(roomService.getRoomById(roomId).getRoomId(), singleRoom.getCommodities());
 		//when
 		roomService.updateRoom(testRoom);
 		//then
@@ -198,11 +186,11 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void updateRoomShouldThrowExceptionWhenThePassedRoomObjectHasInvalidValues() {
+	void updateRoom_ShouldThrowException_WhenThePassedRoomObjectHasInvalidValues() {
 		//given
 		Set<AbstractCommodity> commodities = new HashSet<>(Arrays.asList(new Bed(SINGLE), null, new Toilet()));
 		Room nullRoom = null;
-		Room notPresentRoom = new Room(234, singleSet);
+		Room notPresentRoom = new Room(234, singleRoom.getCommodities());
 		Room roomWithNullCommodity = new Room(doubleRoom.getRoomId(), commodities); // doubleRoom already exists in the room service's repository.
 		roomRepository.save(roomWithNullCommodity);
 		//then
