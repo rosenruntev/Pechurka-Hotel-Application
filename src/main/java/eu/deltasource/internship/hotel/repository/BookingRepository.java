@@ -120,7 +120,7 @@ public class BookingRepository {
 	 */
 	public boolean deleteById(int id) {
 		for (Booking booking : repository) {
-			if (booking.getGuestId() == id) {
+			if (booking.getBookingId() == id) {
 				return delete(booking);
 			}
 		}

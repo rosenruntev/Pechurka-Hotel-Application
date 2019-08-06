@@ -44,4 +44,8 @@ public class RoomService {
     public Room updateRoom(Room room) {
         return roomRepository.updateRoom(room);
     }
+
+    public boolean existsById(int id) {
+    	return roomRepository.existsById(id);
+	}
 }
