@@ -5,6 +5,7 @@ import eu.deltasource.internship.hotel.domain.Guest;
 import eu.deltasource.internship.hotel.exception.InvalidItemException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class GuestService {
 
 	private final GuestRepository guestRepository;
 
+	@Autowired
 	public GuestService(GuestRepository guestRepository) {
 		this.guestRepository = guestRepository;
 	}
@@ -89,7 +91,7 @@ public class GuestService {
 	 *
 	 * @param guests Represents the guests to be created.
 	 */
-	void createGuests(Guest... guests) {
+	public void createGuests(Guest... guests) {
 		if (guests.length == 0) {
 			throw new ItemNotFoundException("No Guests to be added !");
 		}

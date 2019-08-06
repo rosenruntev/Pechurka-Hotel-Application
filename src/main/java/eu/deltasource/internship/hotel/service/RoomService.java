@@ -5,6 +5,7 @@ import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
 import eu.deltasource.internship.hotel.exception.InvalidItemException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +33,8 @@ public class RoomService {
 	 *
 	 * @param roomRepository An already created room repository.
 	 */
-	RoomService(RoomRepository roomRepository) {
+	@Autowired
+	public RoomService(RoomRepository roomRepository) {
 		this.roomRepository = roomRepository;
 	}
 

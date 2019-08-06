@@ -2,6 +2,7 @@ package eu.deltasource.internship.hotel.repository;
 
 import eu.deltasource.internship.hotel.domain.Guest;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 
@@ -22,6 +23,7 @@ public class GuestRepository {
 	 * Default constructor, which initializes the repository
 	 * as an empty ArrayList.
 	 */
+	@Autowired
 	public GuestRepository() {
 		repository = new ArrayList<>();
 	}

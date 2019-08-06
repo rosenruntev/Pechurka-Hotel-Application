@@ -10,7 +10,7 @@ import eu.deltasource.internship.hotel.service.RoomService;
  * corresponding services.
  * <p>
  * P.S. Don't mind this layer for now, it serves only as an example.
- * REST Controllers should always be separated.
+ * REST controllers should always be separated.
  * <p>
  * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
  */
