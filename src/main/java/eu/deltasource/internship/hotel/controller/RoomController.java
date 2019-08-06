@@ -1,4 +1,4 @@
-package eu.deltasource.internship.hotel.Controllers;
+package eu.deltasource.internship.hotel.controller;
 
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.service.RoomService;
@@ -11,15 +11,15 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-public class RoomServiceController {
+public class RoomController {
 	private RoomService roomService;
 
-	private RoomServiceController() {
+	private RoomController() {
 	}
 
 
 
-	public RoomServiceController(RoomService roomService) {
+	public RoomController(RoomService roomService) {
 		this.roomService = roomService;
 	}
 

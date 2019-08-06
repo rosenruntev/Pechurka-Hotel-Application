@@ -1,4 +1,4 @@
-package eu.deltasource.internship.hotel.Controllers;
+package eu.deltasource.internship.hotel.controller;
 
 import eu.deltasource.internship.hotel.domain.Gender;
 import eu.deltasource.internship.hotel.domain.Guest;
@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class GuestServiceController {
+public class GuestController {
 	private GuestService guestService;
 
-	private GuestServiceController() {
+	private GuestController() {
 	}
 
 	;
 
-	public GuestServiceController(GuestService guestService) {
+	public GuestController(GuestService guestService) {
 		this.guestService = guestService;
 	}
 
