@@ -2,6 +2,7 @@ package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Booking;
 import eu.deltasource.internship.hotel.domain.Room;
+import eu.deltasource.internship.hotel.exception.*;
 import eu.deltasource.internship.hotel.repository.BookingRepository;
 
 import java.time.LocalDate;
@@ -78,7 +79,7 @@ public class BookingService {
 	public void updateBookingDatesById(int bookingId, int guestId, LocalDate fromDate, LocalDate toDate) {
 		Booking booking = getBookingById(bookingId);
 		if (booking.getGuestId() != guestId) {
-			throw new IllegalArgumentException("Guest with id " + guestId + " is not the booking's guest");
+			throw new InvalidGuestIdException("Guest id is not same as booking's guest id");
 		}
 		validateDates(fromDate, toDate);
 
@@ -87,7 +88,7 @@ public class BookingService {
 		// if they overlap, the booking dates will be changed otherwise isRoomBookedForPeriod will be called
 		if (!areDatesOverlapping(booking.getFrom(), booking.getTo(), fromDate, toDate)) {
 			if (isRoomBookedForPeriod(bookingId, fromDate, toDate)) {
-				throw new IllegalArgumentException("Room is already booked for that period.");
+				throw new RoomAlreadyBookedException();
 			}
 		}
 
@@ -102,7 +103,7 @@ public class BookingService {
 	 */
 	public void removeBookingById(int bookingId) {
 		if (!existsById(bookingId)) {
-			throw new IllegalArgumentException("Booking with id " + bookingId + " does not exists.");
+			throw new InvalidBookingIdException("Booking with id " + bookingId + " does not exist");
 		}
 
 		bookingRepository.deleteById(bookingId);
@@ -121,23 +122,23 @@ public class BookingService {
 
 	private void validateBookingId(int bookingId) {
 		if (bookingId <= 0) {
-			throw new IllegalArgumentException("Booking id cannot be a negative number or zero.");
+			throw new InvalidBookingIdException("Booking id cannot be a negative number or zero");
 		}
 	}
 
 	private void validateGuestId(int guestId) {
 		if (guestId <= 0) {
-			throw new IllegalArgumentException("Guest id cannot be a negative number or zero.");
+			throw new InvalidGuestIdException("Guest id cannot be a negative number or zero");
 		} else if (!guestService.existsById(guestId)) {
-			throw new IllegalArgumentException("Guest with id " + guestId + " does not exist.");
+			throw new InvalidGuestIdException("Guest with id " + guestId + " does not exist");
 		}
 	}
 
 	private void validateDates(LocalDate fromDate, LocalDate toDate) {
 		if (fromDate == null || toDate == null) {
-			throw new IllegalArgumentException("Dates cannot be null.");
+			throw new InvalidBookingDatesException("Dates cannot be null");
 		} else if (fromDate.equals(toDate) || fromDate.isAfter(toDate)) {
-			throw new IllegalArgumentException("From date cannot be same as to date or be after to date");
+			throw new InvalidBookingDatesException("From date cannot be same as to date or be after to date");
 		}
 	}
 
@@ -174,7 +175,7 @@ public class BookingService {
 		}
 
 		if (availableRoom == null) {
-			throw new IllegalArgumentException("No available room");
+			throw new AvailableRoomNotFoundException();
 		}
 		return availableRoom;
 	}
