@@ -1,8 +1,9 @@
-package eu.deltasource.internship.hotel.trasferObjects;
+package eu.deltasource.internship.hotel.trasferObjects.commodityTOs;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
 import eu.deltasource.internship.hotel.domain.commodity.Bed;
 import eu.deltasource.internship.hotel.domain.commodity.Shower;
 import eu.deltasource.internship.hotel.domain.commodity.Toilet;
@@ -19,6 +20,7 @@ public class AbstractCommodityTO {
 
 	AbstractCommodityTO() {
 	}
+
 	public void setId(int id) {
 		inventoryId = id;
 	}
@@ -26,4 +28,5 @@ public class AbstractCommodityTO {
 	public int getId() {
 		return inventoryId;
 	}
+
 }

@@ -2,13 +2,21 @@ package eu.deltasource.internship.hotel.service;
 
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
+import eu.deltasource.internship.hotel.domain.commodity.Bed;
+import eu.deltasource.internship.hotel.domain.commodity.Shower;
+import eu.deltasource.internship.hotel.domain.commodity.Toilet;
 import eu.deltasource.internship.hotel.exception.InvalidItemException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
+import eu.deltasource.internship.hotel.trasferObjects.RoomTO;
+import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.AbstractCommodityTO;
+import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.BedTO;
+import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.ShowerTO;
+import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.ToiletTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * The RoomService class has a singe private final member of RoomRepository type.
@@ -44,50 +52,50 @@ public class RoomService {
 	 * @param id Represents the sought after room's id.
 	 * @return Returns the room with roomId = id.
 	 */
-	public Room getRoomById(int id) {
+	public RoomTO getRoomById(int id) {
 		validateId(id);
-		return roomRepository.findById(id);
+		return convertToRoomTo(roomRepository.findById(id));
 	}
 
 	/**
 	 * @return Returns all of the rooms in the repository.
 	 */
-	public List<Room> findRooms() {
-		return roomRepository.findAll();
+	public List<RoomTO> findRooms() {
+		return convertToRoomTOS(roomRepository.findAll());
 	}
 
 	/**
 	 * Adds a room to the room repository.
 	 *
-	 * @param room Represents the room to be added to the repository.
+	 * @param roomTO Represents the room to be added to the repository.
 	 * @return Returns an reference to the added room.
 	 */
-	public Room saveRoom(Room room) {
-		validateRooms(room);
-		roomRepository.save(room);
-		return roomRepository.findById(room.getRoomId());
+	public RoomTO saveRoom(RoomTO roomTO) {
+		validateRooms(roomTO);
+		roomRepository.save(convertToRoom(roomTO));
+		return convertToRoomTo(roomRepository.findById(roomRepository.count()));
 	}
 
 	/**
 	 * Adds a number of rooms to the repository.
 	 *
-	 * @param rooms Room/s to be added.
+	 * @param roomTOS Room/s to be added.
 	 */
-	public void saveRooms(Room... rooms) {
-		validateRooms(rooms);
-		roomRepository.saveAll(rooms);
+	public void saveRooms(RoomTO... roomTOS) {
+		validateRooms(roomTOS);
+		roomRepository.saveAll(convertToRooms(roomTOS));
 	}
 
 	/**
 	 * Removes a room from the repository.
 	 *
-	 * @param room Represents the room to be removed.
+	 * @param roomTO Represents the room to be removed.
 	 * @return Returns boolean answer based on the outcome of the operation.
 	 */
-	public boolean deleteRoom(Room room) {
-		validateRooms(room);
-		validateId(room.getRoomId());
-		return roomRepository.delete(room);
+	public boolean deleteRoom(RoomTO roomTO) {
+		validateRooms(roomTO);
+		validateId(roomTO.getRoomId());
+		return roomRepository.delete(convertToRoom(roomTO));
 	}
 
 	/**
@@ -104,13 +112,13 @@ public class RoomService {
 	/**
 	 * Updates the data in a room using a passed room's data as a source.
 	 *
-	 * @param room Represents the source room.
+	 * @param roomTO Represents the source room.
 	 * @return Returns a copy of the updated room.
 	 */
-	public Room updateRoom(Room room) {
-		validateRooms(room);
-		validateId(room.getRoomId());
-		return roomRepository.updateRoom(room);
+	public RoomTO updateRoom(RoomTO roomTO) {
+		validateRooms(roomTO);
+		validateId(roomTO.getRoomId());
+		return convertToRoomTo(roomRepository.updateRoom(convertToRoom(roomTO)));
 	}
 
 	/**
@@ -119,12 +127,12 @@ public class RoomService {
 	 *
 	 * @param rooms Rooms to be validated.
 	 */
-	private void validateRooms(Room... rooms) {
-		for (Room room : rooms) {
+	private void validateRooms(RoomTO... rooms) {
+		for (RoomTO room : rooms) {
 			if (room == null) {
 				throw new ItemNotFoundException("room has null value !");
 			}
-			for (AbstractCommodity commodity : room.getCommodities()) {
+			for (AbstractCommodityTO commodity : room.getCommodities()) {
 				if (commodity == null) {
 					throw new InvalidItemException("Commodity has null value !");
 				}
@@ -138,5 +146,79 @@ public class RoomService {
 		}
 	}
 
+	/**
+	 * Converts a set of commodity transfer objects to a set of commodities.
+	 *
+	 * @param abstractCommodityTOS Transfer objects to be converted.
+	 * @return returns new set of abstract commodities.
+	 */
+	private Set<AbstractCommodity> convertToAbstractCommodities(Set<AbstractCommodityTO> abstractCommodityTOS) {
+		Set<AbstractCommodity> abstractCommodities = new HashSet<>();
+		for (AbstractCommodityTO commodityTO : abstractCommodityTOS) {
+			if (commodityTO instanceof BedTO) {
+				abstractCommodities.add(new Bed(((BedTO) commodityTO).getBedType()));
+			} else if (commodityTO instanceof ToiletTO) {
+				abstractCommodities.add(new Toilet());
+			} else if (commodityTO instanceof ShowerTO) {
+				abstractCommodities.add(new Shower());
+			}
+		}
+		return abstractCommodities;
+	}
 
+	/**
+	 * Converts a room transfer object to a room object.
+	 *
+	 * @param roomTO transfer object to be converted.
+	 * @return returns the newly generated room object.
+	 */
+	private Room convertToRoom(RoomTO roomTO) {
+		return new Room(roomTO.getRoomId(), convertToAbstractCommodities(roomTO.getCommodities()));
+	}
+
+	/**
+	 * Converts a number of room transfer objects into a list of room objects.
+	 *
+	 * @param roomTOS room transfer objects to be converted.
+	 * @return returns the newly generated list of rooms.
+	 */
+	private List<Room> convertToRooms(RoomTO... roomTOS) {
+		List<Room> roomList = new ArrayList<>();
+		for (RoomTO roomTO : roomTOS) {
+			roomList.add(convertToRoom(roomTO));
+		}
+		return roomList;
+	}
+
+	/**
+	 * Converts a set of commodities to a set of commodity transfer objects.
+	 *
+	 * @param abstractCommodities Transfer objects to be converted.
+	 * @return returns new set of abstract commodities.
+	 */
+	private Set<AbstractCommodityTO> convertToAbstractCommodityTOS(Set<AbstractCommodity> abstractCommodities) {
+		Set<AbstractCommodityTO> abstractCommodityTOS = new HashSet<>();
+		for (AbstractCommodity commodity : abstractCommodities) {
+			if (commodity instanceof Bed) {
+				abstractCommodityTOS.add(new BedTO(((Bed) commodity).getBedType()));
+			} else if (commodity instanceof Toilet) {
+				abstractCommodityTOS.add(new ToiletTO());
+			} else if (commodity instanceof Shower) {
+				abstractCommodityTOS.add(new ShowerTO());
+			}
+		}
+		return abstractCommodityTOS;
+	}
+
+	private RoomTO convertToRoomTo(Room room) {
+		return new RoomTO(room.getRoomId(), convertToAbstractCommodityTOS(room.getCommodities()));
+	}
+
+	private List<RoomTO> convertToRoomTOS(List<Room> rooms) {
+		List<RoomTO> toList = new ArrayList<>();
+		for (Room room : rooms) {
+			toList.add(convertToRoomTo(room));
+		}
+		return toList;
+	}
 }

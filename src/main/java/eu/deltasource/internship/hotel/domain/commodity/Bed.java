@@ -6,10 +6,6 @@ package eu.deltasource.internship.hotel.domain.commodity;
 public class Bed extends AbstractCommodity {
 
 	private BedType bedType;
-//todo removeeeeeeeeeeeee
-	//todo removee 2
-	public Bed() {
-	}
 
 	public Bed(BedType bedType) {
 		super();
