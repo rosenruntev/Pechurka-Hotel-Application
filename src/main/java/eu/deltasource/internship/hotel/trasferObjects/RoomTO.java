@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RoomTO {
-	int roomCapacity;
+	private int roomCapacity;
 	private int roomId = 1;
 	private Set<AbstractCommodityTO> commodities;
 

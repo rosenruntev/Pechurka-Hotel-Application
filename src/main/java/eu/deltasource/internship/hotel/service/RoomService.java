@@ -23,7 +23,6 @@ import java.util.List;
  * methods like : findRooms,getRoomById return an unmodifiable version of the
  * object/s we are looking for.
  */
-@Service
 public class RoomService {
 
 	private final RoomRepository roomRepository;
@@ -136,5 +135,8 @@ public class RoomService {
 		if (id < 0 || (!roomRepository.existsById(id))) {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
+	}
+	public boolean existsById(int id) {
+		return roomRepository.existsById(id);
 	}
 }

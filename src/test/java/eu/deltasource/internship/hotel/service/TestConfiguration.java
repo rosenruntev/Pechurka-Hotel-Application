@@ -1,12 +1,12 @@
 package eu.deltasource.internship.hotel.service;
-/*
+
 import eu.deltasource.internship.hotel.domain.Hotel;
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.*;
 import eu.deltasource.internship.hotel.repository.BookingRepository;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,10 +18,9 @@ import static eu.deltasource.internship.hotel.domain.commodity.BedType.SINGLE;
  * This test class has a ready initialization for the rooms of the hotel,
  * which you can use for testing! Add more when needed.
  */
-/*
 public class TestConfiguration {
 
-	@Before
+	@BeforeAll
 	public void setUp() {
 
 		// Initialize Repositories
@@ -72,7 +71,5 @@ public class TestConfiguration {
 
 		// adds the rooms to the repository, which then can be accesses from the RoomService
 		roomService.saveRooms(doubleRoom, singleRoom, kingSizeRoom, threePeopleKingSizeRoom, fourPersonRoom, fivePersonRoom);
-
 	}
 }
-*/

@@ -8,6 +8,7 @@ import eu.deltasource.internship.hotel.repository.GuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 /**
@@ -28,6 +29,11 @@ public class GuestService {
 
 	private final GuestRepository guestRepository;
 
+	/**
+	 * Constructs a guest service with given guest repository
+	 *
+	 * @param guestRepository the guest repository
+	 */
 	@Autowired
 	public GuestService(GuestRepository guestRepository) {
 		this.guestRepository = guestRepository;
@@ -121,9 +127,19 @@ public class GuestService {
 		}
 	}
 
+
 	private void validateId(int id) {
 		if (id < 0 || (!guestRepository.existsById(id))) {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
+	}
+	/**
+	 * Returns if the guest with particular id exists
+	 *
+	 * @param id the id of the guest
+	 * @return true if the guest exists otherwise false
+	 */
+	public boolean existsById(int id) {
+		return guestRepository.existsById(id);
 	}
 }
