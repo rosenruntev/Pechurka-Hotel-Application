@@ -2,11 +2,13 @@ package eu.deltasource.internship.hotel.controllers;
 
 import eu.deltasource.internship.hotel.domain.Guest;
 import eu.deltasource.internship.hotel.service.GuestService;
+import eu.deltasource.internship.hotel.trasferObjects.GuestTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,8 +27,8 @@ public class GuestController {
 	}
 
 	@GetMapping(value = "findAllGuests/")
-	public List<Guest> findAllGuests() {
-		return guestService.getAllGuests();
+	public List<GuestTO> findAllGuests() {
+		return convertToGuestTOs(guestService.getAllGuests());
 	}
 
 	@DeleteMapping(value = "removeGuest/{id}")
@@ -35,19 +37,45 @@ public class GuestController {
 	}
 
 	@PutMapping(value = "updateGuest/", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Guest updateGuest(@RequestBody Guest newGuest) {
-		return guestService.updateGuest(newGuest.getGuestId(), newGuest.getFirstName(),
-			newGuest.getLastName(), newGuest.getGender());
+	public GuestTO updateGuest(@RequestBody GuestTO newGuestTO) {
+		return convertToGuestTO(guestService.updateGuest(newGuestTO.getGuestId(), newGuestTO.getFirstName(),
+			newGuestTO.getLastName(), newGuestTO.getGender()));
 	}
 
 	@PostMapping(value = "createGuest/", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void createGuest(@RequestBody Guest guest) {
-		guestService.createGuest(guest.getGuestId(), guest.getFirstName(),
-			guest.getLastName(), guest.getGender());
+	public void createGuest(@RequestBody GuestTO guestTO) {
+		guestService.createGuest(guestTO.getGuestId(), guestTO.getFirstName(),
+			guestTO.getLastName(), guestTO.getGender());
 	}
 
 	@PostMapping(value = "createGuests/", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void createGuests(@RequestBody Guest... guests) {
-		guestService.createGuests(guests);
+	public void createGuests(@RequestBody GuestTO... guestTOS) {
+		guestService.createGuests(convertToGuests(guestTOS));
+	}
+
+
+	private Guest convertToGuest(GuestTO guestTO) {
+		return new Guest(guestTO.getGuestId(), guestTO.getFirstName(), guestTO.getLastName(), guestTO.getGender());
+	}
+
+	private Guest[] convertToGuests(GuestTO... guestTOS) {
+		Guest[] guestArray;
+		guestArray = new Guest[guestTOS.length];
+		for (int guestCounter = 0; guestCounter < guestTOS.length; guestCounter++) {
+			guestArray[guestCounter] = convertToGuest(guestTOS[guestCounter]);
+		}
+		return guestArray;
+	}
+
+	private GuestTO convertToGuestTO(Guest guest) {
+		return new GuestTO(guest.getGuestId(), guest.getFirstName(), guest.getLastName(), guest.getGender());
+	}
+
+	private List<GuestTO> convertToGuestTOs(List<Guest> guests) {
+		List<GuestTO> guestTOS = new ArrayList<>();
+		for (Guest guest : guests) {
+			guestTOS.add(convertToGuestTO(guest));
+		}
+		return guestTOS;
 	}
 }

@@ -1,19 +1,14 @@
 package eu.deltasource.internship.hotel.trasferObjects;
 
-import eu.deltasource.internship.hotel.domain.Room;
-import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
-import eu.deltasource.internship.hotel.domain.commodity.Bed;
 import eu.deltasource.internship.hotel.exception.FailedInitializationException;
 import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.AbstractCommodityTO;
 import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.BedTO;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class RoomTO {
-	int roomCapacity ;
+	int roomCapacity;
 	private int roomId = 1;
 	private Set<AbstractCommodityTO> commodities;
 
@@ -45,7 +40,7 @@ public class RoomTO {
 		roomId = newRoomId;
 	}
 
-	public int getRoomCapacity(){
+	public int getRoomCapacity() {
 		return roomCapacity;
 	}
 

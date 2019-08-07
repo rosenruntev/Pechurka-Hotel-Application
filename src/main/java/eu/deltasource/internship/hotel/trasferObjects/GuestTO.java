@@ -1,6 +1,7 @@
 package eu.deltasource.internship.hotel.trasferObjects;
 
 import eu.deltasource.internship.hotel.domain.Gender;
+import eu.deltasource.internship.hotel.domain.Guest;
 
 public class GuestTO {
 	private int guestId;
@@ -8,11 +9,22 @@ public class GuestTO {
 	private String firstName;
 	private String lastName;
 
+	public GuestTO() {
+	}
+
+	public GuestTO(int guestId, String firstName, String lastName, Gender gender) {
+		this();
+		this.guestId = guestId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.gender = gender;
+	}
+
 	public int getGuestId() {
 		return guestId;
 	}
 
-	public void setGuestId(int newGuestId){
+	public void setGuestId(int newGuestId) {
 		guestId = newGuestId;
 	}
 
@@ -20,7 +32,7 @@ public class GuestTO {
 		return gender;
 	}
 
-	public  void setGender(Gender newGender){
+	public void setGender(Gender newGender) {
 		gender = newGender;
 	}
 
@@ -28,7 +40,7 @@ public class GuestTO {
 		return firstName;
 	}
 
-	public void setFirstName(String newFirstName){
+	public void setFirstName(String newFirstName) {
 		firstName = newFirstName;
 	}
 
@@ -36,7 +48,7 @@ public class GuestTO {
 		return lastName;
 	}
 
-	public void setLastName(String newLastName){
+	public void setLastName(String newLastName) {
 		lastName = newLastName;
 	}
 }

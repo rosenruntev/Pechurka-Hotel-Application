@@ -5,17 +5,13 @@ import eu.deltasource.internship.hotel.domain.commodity.*;
 import eu.deltasource.internship.hotel.exception.InvalidItemException;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
-import eu.deltasource.internship.hotel.trasferObjects.RoomTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.AbstractCommodityTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.BedTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.ShowerTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.ToiletTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-import static eu.deltasource.internship.hotel.domain.commodity.BedType.DOUBLE;
 import static eu.deltasource.internship.hotel.domain.commodity.BedType.SINGLE;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,8 +20,8 @@ class RoomServiceTest {
 
 	private RoomService roomService;
 
-	private RoomTO doubleRoom;
-	private RoomTO singleRoom;
+	private Room doubleRoom;
+	private Room singleRoom;
 
 	/**
 	 * Creates an empty room repository .
@@ -43,21 +39,21 @@ class RoomServiceTest {
 		// Initialize Services
 		roomService = new RoomService(roomRepository);
 		// Commodities for a double room
-		AbstractCommodityTO doubleBed = new BedTO(BedType.DOUBLE);
-		AbstractCommodityTO toilet = new ToiletTO();
-		AbstractCommodityTO shower = new ShowerTO();
-		Set<AbstractCommodityTO> doubleSet = new HashSet<>(Arrays.asList(doubleBed, toilet, shower));
+		AbstractCommodity doubleBed = new Bed(BedType.DOUBLE);
+		AbstractCommodity toilet = new Toilet();
+		AbstractCommodity shower = new Shower();
+		Set<AbstractCommodity> doubleSet = new HashSet<>(Arrays.asList(doubleBed, toilet, shower));
 
 		// commodities for a single room
-		final Set<AbstractCommodityTO> singleSet = new HashSet<>(Arrays.asList(new BedTO(SINGLE), new ToiletTO(), new ShowerTO()));
+		final Set<AbstractCommodity> singleSet = new HashSet<>(Arrays.asList(new Bed(SINGLE), new Toilet(), new Shower()));
 
 		// commodities for a double room with king size bed
-		final Set<AbstractCommodityTO> kingSizeSet = new HashSet<>(Arrays.asList(new BedTO(BedType.KING_SIZE), new ToiletTO(), new ShowerTO()));
+		final Set<AbstractCommodity> kingSizeSet = new HashSet<>(Arrays.asList(new Bed(BedType.KING_SIZE), new Toilet(), new Shower()));
 
 		// create some rooms
-		doubleRoom = new RoomTO(1, doubleSet);
-		singleRoom = new RoomTO(1, singleSet);
-		RoomTO doubleRoomWithKingSize = new RoomTO(1, kingSizeSet);
+		doubleRoom = new Room(1, doubleSet);
+		singleRoom = new Room(1, singleSet);
+		Room doubleRoomWithKingSize = new Room(1, kingSizeSet);
 
 		// adds the rooms to the repository, which then can be accesses from the RoomService
 		roomService.saveRooms(doubleRoom, singleRoom, doubleRoomWithKingSize);
@@ -66,17 +62,14 @@ class RoomServiceTest {
 	@Test
 	void getRoomById_ShouldReturnTheSoughtAfterRoom() {
 		//given
-		RoomTO actualRoom;
+		Room actualRoom;
 		int doubleRoomCapacity = 2;
 		//when
 		actualRoom = roomService.getRoomById(doubleRoom.getRoomId());
 		//then
 		assertEquals(doubleRoom, actualRoom);
-
 		assertEquals(actualRoom.getRoomCapacity(), doubleRoomCapacity);
-		assertEquals(getNumberOfShowersFrom(doubleRoom), getNumberOfShowersFrom(actualRoom));
-		assertEquals(getNumberOfToiletsFrom(doubleRoom), getNumberOfToiletsFrom(actualRoom));
-		assertTrue(getBedsFrom(actualRoom).contains(DOUBLE));
+		assertEquals(doubleRoom.getCommodities(), actualRoom.getCommodities());
 	}
 
 	@Test
@@ -92,23 +85,19 @@ class RoomServiceTest {
 	@Test
 	void saveRoom_ShouldReturnTheCurrentlyAddedRoom() {
 		//given
-		RoomTO testRoom = new RoomTO(1, singleRoom.getCommodities());
-		RoomTO actualValue;
-		RoomTO lastAddedRoom ;
+		Room testRoom = new Room(1, singleRoom.getCommodities());
+		Room actualValue;
 		//when
 		actualValue = roomService.saveRoom(testRoom);
-		lastAddedRoom = roomService.getRoomById(roomService.findRooms().size());
 		//then
-		assertEquals(roomService.findRooms().size(), actualValue.getRoomId());
-		assertEquals(roomService.getRoomById(roomService.findRooms().size()).getRoomCapacity(),actualValue.getRoomCapacity());
-		assertEquals(getNumberOfShowersFrom(lastAddedRoom),getNumberOfShowersFrom(actualValue));
-		assertEquals(getNumberOfShowersFrom(lastAddedRoom),getNumberOfShowersFrom(actualValue));
+		assertEquals(roomService.getRoomById(roomService.findRooms().size()).getRoomCapacity(), actualValue.getRoomCapacity());
+		assertEquals(testRoom.getCommodities(), actualValue.getCommodities());
 	}
 
 	@Test
 	void saveRoom_ShouldThrowException_WhenRoomIsNull() {
 		//given
-		RoomTO nullRoom = null;
+		Room nullRoom = null;
 		//then
 		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.saveRoom(nullRoom);
@@ -119,9 +108,9 @@ class RoomServiceTest {
 	void saveRooms_ShouldCreateMultipleRoomsAtOnce() {
 		//given
 		int oldRoomServiceNumberOfRooms = roomService.findRooms().size();
-		RoomTO testRoom1 = new RoomTO(1, singleRoom.getCommodities());
-		RoomTO testRoom2 = new RoomTO(1, singleRoom.getCommodities());
-		RoomTO testRoom3 = new RoomTO(1, singleRoom.getCommodities());
+		Room testRoom1 = new Room(1, singleRoom.getCommodities());
+		Room testRoom2 = new Room(1, singleRoom.getCommodities());
+		Room testRoom3 = new Room(1, singleRoom.getCommodities());
 		//when
 		roomService.saveRooms(testRoom1, testRoom2, testRoom3);
 		//then
@@ -131,8 +120,8 @@ class RoomServiceTest {
 	@Test
 	void saveRooms_ShouldThrowException_WhenTheRoomToSaveHasInvalidValues() {
 		//given
-		Set<AbstractCommodityTO> commoditiesSetWithNullMembers = new HashSet<>(Arrays.asList(new BedTO(SINGLE), null, new ToiletTO()));
-		RoomTO roomWithNullCommodity = new RoomTO(1, commoditiesSetWithNullMembers);
+		Set<AbstractCommodity> commoditiesSetWithNullMembers = new HashSet<>(Arrays.asList(new Bed(SINGLE), null, new Toilet()));
+		Room roomWithNullCommodity = new Room(1, commoditiesSetWithNullMembers);
 		//then
 		assertThrows(InvalidItemException.class, () -> {
 			roomService.saveRooms(roomWithNullCommodity);
@@ -149,8 +138,8 @@ class RoomServiceTest {
 	@Test
 	void deleteRoom_ShouldThrowException_WhenRoomIsNull_Or_DoesNotExist() {
 		//given
-		RoomTO nullRoom = null;
-		RoomTO nonExistentRoom = new RoomTO(236, singleRoom.getCommodities());
+		Room nullRoom = null;
+		Room nonExistentRoom = new Room(236, singleRoom.getCommodities());
 		//then
 		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.deleteRoom(nullRoom);
@@ -187,25 +176,23 @@ class RoomServiceTest {
 		//given
 		int roomId = 1;
 		int oldRoomCapacity = roomService.getRoomById(roomId).getRoomCapacity();
-		RoomTO testRoomTO = new RoomTO(roomService.getRoomById(roomId).getRoomId(), singleRoom.getCommodities());
-		List<BedType> testRoomBedTypes = getBedsFrom(testRoomTO);
+		Room testRoom = new Room(roomService.getRoomById(roomId).getRoomId(), singleRoom.getCommodities());
+		Set<AbstractCommodity> oldCommodities = roomService.getRoomById(roomId).getCommodities();
 		//when
-		roomService.updateRoom(testRoomTO);
+		roomService.updateRoom(testRoom);
 		//then
 		assertNotEquals(oldRoomCapacity, roomService.getRoomById(roomId).getCommodities());
-		assertEquals(1, testRoomBedTypes.size());
-		assertTrue(testRoomBedTypes.contains(SINGLE));
-		assertEquals(getNumberOfShowersFrom(testRoomTO), getNumberOfShowersFrom(roomService.getRoomById(roomId)));
-		assertEquals(getNumberOfToiletsFrom(testRoomTO), getNumberOfToiletsFrom(roomService.getRoomById(roomId)));
+		assertNotEquals(oldCommodities, roomService.getRoomById(roomId).getCommodities());
 
 	}
 
 	@Test
 	void updateRoom_ShouldThrowException_WhenThePassedRoomObjectHasInvalidValues() {
 		//given
-		Set<AbstractCommodityTO> commodities = new HashSet<>(Arrays.asList(new BedTO(SINGLE), null, new ToiletTO()));
-		RoomTO nullRoom = null;
-		RoomTO notPresentRoom = new RoomTO(234, singleRoom.getCommodities());
+		Set<AbstractCommodity> commodities = new HashSet<>(Arrays.asList(new Bed(SINGLE), null, new Toilet()));
+		Room nullRoom = null;
+		Room notPresentRoom = new Room(234, singleRoom.getCommodities());
+		Room roomWithNullCommodity = new Room(1, commodities);
 		//then
 		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.updateRoom(nullRoom);
@@ -213,87 +200,9 @@ class RoomServiceTest {
 		assertThrows(ItemNotFoundException.class, () -> {
 			roomService.updateRoom(notPresentRoom);
 		});
-	}
-
-
-	/**
-	 * Converts a set of commodity transfer objects to a set of commodities.
-	 *
-	 * @param abstractCommodityTOS Transfer objects to be converted.
-	 * @return returns new set of abstract commodities.
-	 */
-	private Set<AbstractCommodity> convertToAbstractCommodities(Set<AbstractCommodityTO> abstractCommodityTOS) {
-		Set<AbstractCommodity> abstractCommodities = new HashSet<>();
-		for (AbstractCommodityTO commodityTO : abstractCommodityTOS) {
-			if (commodityTO instanceof BedTO) {
-				abstractCommodities.add(new Bed(((BedTO) commodityTO).getBedType()));
-			} else if (commodityTO instanceof ToiletTO) {
-				abstractCommodities.add(new Toilet());
-			} else if (commodityTO instanceof ShowerTO) {
-				abstractCommodities.add(new Shower());
-			}
-		}
-		return abstractCommodities;
-	}
-
-	/**
-	 * Converts a room transfer object to a room object.
-	 *
-	 * @param roomTO transfer object to be converted.
-	 * @return returns the newly generated room object.
-	 */
-	private Room convertToRoom(RoomTO roomTO) {
-		return new Room(roomTO.getRoomId(), convertToAbstractCommodities(roomTO.getCommodities()));
-	}
-
-	/**
-	 * Converts a number of room transfer objects into a list of room objects.
-	 *
-	 * @param roomTOS room transfer objects to be converted.
-	 * @return returns the newly generated list of rooms.
-	 */
-	private List<Room> convertToRooms(RoomTO... roomTOS) {
-		List<Room> roomList = new ArrayList<>();
-		for (RoomTO roomTO : roomTOS) {
-			roomList.add(convertToRoom(roomTO));
-		}
-		return roomList;
-	}
-
-	/**
-	 * Used to extract the beds from a room.
-	 *
-	 * @param room A room that is used for a source of beds.
-	 * @return returns the newly generated list of beds.
-	 */
-	private List<BedType> getBedsFrom(RoomTO room) {
-		List<BedType> bedList = new ArrayList<>();
-		for (AbstractCommodityTO commodity : room.getCommodities()) {
-			if (commodity instanceof BedTO) {
-				bedList.add(((BedTO) commodity).getBedType());
-			}
-		}
-		return bedList;
-	}
-
-	private int getNumberOfToiletsFrom(RoomTO room) {
-		int numberOfToilets = 0;
-		for (AbstractCommodityTO commodity : room.getCommodities()) {
-			if (commodity instanceof ToiletTO) {
-				numberOfToilets++;
-			}
-		}
-		return numberOfToilets;
-	}
-
-	private int getNumberOfShowersFrom(RoomTO room) {
-		int numberOfShowers = 0;
-		for (AbstractCommodityTO commodity : room.getCommodities()) {
-			if (commodity instanceof ShowerTO) {
-				numberOfShowers++;
-			}
-		}
-		return numberOfShowers;
+		assertThrows(InvalidItemException.class, () -> {
+			roomService.updateRoom(roomWithNullCommodity);
+		});
 	}
 }
 
