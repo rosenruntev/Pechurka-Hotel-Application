@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * A class that represents service for bookings
  */
+@Service
 public class BookingService {
 
 	private final BookingRepository bookingRepository;
