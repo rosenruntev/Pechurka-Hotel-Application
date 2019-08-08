@@ -23,5 +23,4 @@ public class AbstractCommodityTO {
 	public int getId() {
 		return inventoryId;
 	}
-
 }
