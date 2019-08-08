@@ -1,7 +1,6 @@
-package eu.deltasource.internship.hotel.trasferObjects;
+package eu.deltasource.internship.hotel.transferobject;
 
 import eu.deltasource.internship.hotel.domain.Gender;
-import eu.deltasource.internship.hotel.domain.Guest;
 
 public class GuestTO {
 	private int guestId;

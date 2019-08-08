@@ -1,12 +1,8 @@
-package eu.deltasource.internship.hotel.trasferObjects.commodityTOs;
+package eu.deltasource.internship.hotel.transferobject.commodityTOs;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
-import eu.deltasource.internship.hotel.domain.commodity.Bed;
-import eu.deltasource.internship.hotel.domain.commodity.Shower;
-import eu.deltasource.internship.hotel.domain.commodity.Toilet;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)

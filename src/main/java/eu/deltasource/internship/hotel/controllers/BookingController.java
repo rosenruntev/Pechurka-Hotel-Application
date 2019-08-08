@@ -2,7 +2,8 @@ package eu.deltasource.internship.hotel.controllers;
 
 import eu.deltasource.internship.hotel.domain.Booking;
 import eu.deltasource.internship.hotel.service.BookingService;
-import eu.deltasource.internship.hotel.trasferObjects.BookingTO;
+import eu.deltasource.internship.hotel.transferobject.BookingTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

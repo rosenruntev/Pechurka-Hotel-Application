@@ -1,4 +1,4 @@
-package eu.deltasource.internship.hotel.trasferObjects.commodityTOs;
+package eu.deltasource.internship.hotel.transferobject.commodityTOs;
 
 public class ShowerTO extends  AbstractCommodityTO {
 	public ShowerTO(){

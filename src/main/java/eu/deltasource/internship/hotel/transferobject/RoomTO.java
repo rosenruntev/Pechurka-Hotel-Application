@@ -1,8 +1,8 @@
-package eu.deltasource.internship.hotel.trasferObjects;
+package eu.deltasource.internship.hotel.transferobject;
 
 import eu.deltasource.internship.hotel.exception.FailedInitializationException;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.AbstractCommodityTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.BedTO;
+import eu.deltasource.internship.hotel.transferobject.commodityTOs.AbstractCommodityTO;
+import eu.deltasource.internship.hotel.transferobject.commodityTOs.BedTO;
 
 import java.util.HashSet;
 import java.util.Set;

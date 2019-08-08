@@ -6,16 +6,19 @@ import eu.deltasource.internship.hotel.domain.commodity.Bed;
 import eu.deltasource.internship.hotel.domain.commodity.Shower;
 import eu.deltasource.internship.hotel.domain.commodity.Toilet;
 import eu.deltasource.internship.hotel.service.RoomService;
-import eu.deltasource.internship.hotel.trasferObjects.RoomTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.AbstractCommodityTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.BedTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.ShowerTO;
-import eu.deltasource.internship.hotel.trasferObjects.commodityTOs.ToiletTO;
+import eu.deltasource.internship.hotel.transferobject.RoomTO;
+import eu.deltasource.internship.hotel.transferobject.commodityTOs.AbstractCommodityTO;
+import eu.deltasource.internship.hotel.transferobject.commodityTOs.BedTO;
+import eu.deltasource.internship.hotel.transferobject.commodityTOs.ShowerTO;
+import eu.deltasource.internship.hotel.transferobject.commodityTOs.ToiletTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("RoomService/")

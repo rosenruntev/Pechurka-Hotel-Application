@@ -1,4 +1,4 @@
-package eu.deltasource.internship.hotel.trasferObjects.commodityTOs;
+package eu.deltasource.internship.hotel.transferobject.commodityTOs;
 
 import eu.deltasource.internship.hotel.domain.commodity.BedType;
 

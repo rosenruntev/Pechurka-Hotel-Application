@@ -2,11 +2,10 @@ package eu.deltasource.internship.hotel.controllers;
 
 import eu.deltasource.internship.hotel.domain.Guest;
 import eu.deltasource.internship.hotel.service.GuestService;
-import eu.deltasource.internship.hotel.trasferObjects.GuestTO;
+import eu.deltasource.internship.hotel.transferobject.GuestTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.ArrayList;
 import java.util.List;
