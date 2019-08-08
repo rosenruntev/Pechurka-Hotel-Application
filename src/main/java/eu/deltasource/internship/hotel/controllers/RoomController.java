@@ -52,7 +52,7 @@ public class RoomController {
 		return roomService.deleteRoom(convertToRoom(roomTO));
 	}
 
-	@RequestMapping(value = "removeById/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "removeRoomById/{id}", method = RequestMethod.DELETE)
 	public boolean removeRoomById(@PathVariable int id) {
 		return roomService.deleteRoomById(id);
 	}
