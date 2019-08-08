@@ -4,6 +4,7 @@ import eu.deltasource.internship.hotel.domain.Booking;
 import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.exception.*;
 import eu.deltasource.internship.hotel.repository.BookingRepository;
+import eu.deltasource.internship.hotel.transferobject.BookingTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * A class that represents service for bookings
  */
+@Service
 public class BookingService {
 
 	private final BookingRepository bookingRepository;
@@ -48,6 +50,19 @@ public class BookingService {
 		// We are always passing 1 because booking's id is generated in booking repository
 		Booking newBooking = new Booking(1, guestId, room.getRoomId(), numberOfPeople, fromDate, toDate);
 		bookingRepository.save(newBooking);
+	}
+
+	/**
+	 * Creates a booking with given booking transfer object
+	 *
+	 * @param bookingTO the booking transfer object
+	 */
+	public void createBooking(BookingTO bookingTO) {
+		int guestId = bookingTO.getGuestId();
+		int numberOfPeople = bookingTO.getNumberOfPeople();
+		LocalDate fromDate = bookingTO.getFromDate();
+		LocalDate toDate = bookingTO.getToDate();
+		createBooking(guestId, numberOfPeople, fromDate, toDate);
 	}
 
 	/**
@@ -95,6 +110,19 @@ public class BookingService {
 
 		booking.setBookingDates(fromDate, toDate);
 		bookingRepository.updateDates(booking);
+	}
+
+	/**
+	 * Updates dates of booking with particular id
+	 *
+	 * @param bookingTO the booking transfer object
+	 */
+	public void updateBookingDatesById(BookingTO bookingTO) {
+		int bookingId = bookingTO.getBookingId();
+		int guestId = bookingTO.getGuestId();
+		LocalDate fromDate = bookingTO.getFromDate();
+		LocalDate toDate = bookingTO.getToDate();
+		updateBookingDatesById(bookingId, guestId, fromDate, toDate);
 	}
 
 	/**
