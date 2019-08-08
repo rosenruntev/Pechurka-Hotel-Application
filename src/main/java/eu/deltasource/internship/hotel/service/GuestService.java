@@ -4,12 +4,14 @@ import eu.deltasource.internship.hotel.domain.Gender;
 import eu.deltasource.internship.hotel.domain.Guest;
 import eu.deltasource.internship.hotel.exception.ItemNotFoundException;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * A class that represents service for guests
  */
+@Service
 public class GuestService {
 
 	private final GuestRepository guestRepository;

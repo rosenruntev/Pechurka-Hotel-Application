@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by Taner Ilyazov - Delta Source Bulgaria on 2019-07-28.
  */
+@Service
 public class RoomService {
 
 	private final RoomRepository roomRepository;
