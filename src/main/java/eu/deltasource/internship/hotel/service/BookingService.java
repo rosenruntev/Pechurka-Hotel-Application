@@ -104,7 +104,7 @@ public class BookingService {
 		// if they overlap, the booking dates will be changed otherwise isRoomBookedForPeriod will be called
 		if (!areDatesOverlapping(booking.getFrom(), booking.getTo(), fromDate, toDate)) {
 			if (isRoomBookedForPeriod(bookingId, fromDate, toDate)) {
-				throw new RoomAlreadyBookedException();
+				throw new RoomAlreadyBookedException("Room is already booked for that period");
 			}
 		}
 
@@ -204,7 +204,7 @@ public class BookingService {
 		}
 
 		if (availableRoom == null) {
-			throw new AvailableRoomNotFoundException();
+			throw new AvailableRoomNotFoundException("Available room was not found");
 		}
 		return availableRoom;
 	}

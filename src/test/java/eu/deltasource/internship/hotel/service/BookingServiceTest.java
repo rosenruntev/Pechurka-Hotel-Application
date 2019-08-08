@@ -59,7 +59,6 @@ public class BookingServiceTest {
 	}
 
 	private void addSimpleGuest() {
-		// TODO: use GuestService to add the guest after merge
 		Guest guest = new Guest(1, "first name", "last name", Gender.MALE);
 		guestRepository.save(guest);
 	}

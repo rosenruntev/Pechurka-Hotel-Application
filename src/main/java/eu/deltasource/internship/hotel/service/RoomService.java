@@ -137,6 +137,7 @@ public class RoomService {
 			throw new ItemNotFoundException("id has invalid value !");
 		}
 	}
+
 	public boolean existsById(int id) {
 		return roomRepository.existsById(id);
 	}
