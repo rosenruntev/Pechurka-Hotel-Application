@@ -32,7 +32,7 @@ public class GuestController {
 	}
 
 	@DeleteMapping(value = "removeGuest/{id}")
-	public boolean removeGuestById(@PathVariable int id) {
+	public boolean removeGuest(@PathVariable int id) {
 		return guestService.removeGuestById(id);
 	}
 

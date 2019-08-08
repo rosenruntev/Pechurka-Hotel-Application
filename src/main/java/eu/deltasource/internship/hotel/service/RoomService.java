@@ -23,6 +23,7 @@ import java.util.List;
  * methods like : findRooms,getRoomById return an unmodifiable version of the
  * object/s we are looking for.
  */
+@Service
 public class RoomService {
 
 	private final RoomRepository roomRepository;
