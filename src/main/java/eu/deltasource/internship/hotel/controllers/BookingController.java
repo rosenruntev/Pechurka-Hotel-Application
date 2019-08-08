@@ -39,11 +39,7 @@ public class BookingController {
 	@RequestMapping(value = "/{id}", method = PUT)
 	public void updateBookingDatesById(@PathVariable int id,
 									   @RequestBody BookingTO bookingTO) {
-		int guestId = bookingTO.getGuestId();
-		LocalDate fromDate = bookingTO.getFromDate();
-		LocalDate toDate = bookingTO.getToDate();
-
-		bookingService.updateBookingDatesById(id, guestId, fromDate, toDate);
+		bookingService.updateBookingDatesById(bookingTO);
 	}
 
 	@RequestMapping(value = "/{id}", method = DELETE)
