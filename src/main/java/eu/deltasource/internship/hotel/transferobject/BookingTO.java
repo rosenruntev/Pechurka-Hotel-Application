@@ -5,12 +5,23 @@ import java.time.LocalDate;
 public class BookingTO {
 	private int bookingId;
 	private int guestId;
+	private int numberOfPeople;
 	private LocalDate fromDate;
 	private LocalDate toDate;
+
+	public BookingTO() {
+	}
 
 	public BookingTO(int bookingId, int guestId, LocalDate fromDate, LocalDate toDate) {
 		this.bookingId = bookingId;
 		this.guestId = guestId;
+		this.fromDate = fromDate;
+		this.toDate = toDate;
+	}
+
+	public BookingTO(int bookingId, int guestId, int numberOfPeople, LocalDate fromDate, LocalDate toDate) {
+		this.guestId = guestId;
+		this.numberOfPeople = numberOfPeople;
 		this.fromDate = fromDate;
 		this.toDate = toDate;
 	}
@@ -29,6 +40,14 @@ public class BookingTO {
 
 	public void setGuestId(int guestId) {
 		this.guestId = guestId;
+	}
+
+	public int getNumberOfPeople() {
+		return numberOfPeople;
+	}
+
+	public void setNumberOfPeople(int numberOfPeople) {
+		this.numberOfPeople = numberOfPeople;
 	}
 
 	public LocalDate getFromDate() {
