@@ -32,7 +32,7 @@ public class RoomController {
 		return convertToRoomTOS(roomService.findRooms());
 	}
 
-	@RequestMapping(value = "findById/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "findRoom/{id}", method = RequestMethod.GET)
 	public RoomTO findRoomById(@PathVariable int id) {
 		return convertToRoomTO(roomService.getRoomById(id));
 	}
@@ -47,12 +47,12 @@ public class RoomController {
 		roomService.saveRooms(convertToRooms(roomTOS));
 	}
 
-	@RequestMapping(value = "deleteRoom/", method = RequestMethod.DELETE)
+	@RequestMapping(value = "removeRoom/", method = RequestMethod.DELETE)
 	public boolean removeRoom(@RequestBody RoomTO roomTO) {
 		return roomService.deleteRoom(convertToRoom(roomTO));
 	}
 
-	@RequestMapping(value = "deleteRoomById/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "removeById/{id}", method = RequestMethod.DELETE)
 	public boolean removeRoomById(@PathVariable int id) {
 		return roomService.deleteRoomById(id);
 	}
