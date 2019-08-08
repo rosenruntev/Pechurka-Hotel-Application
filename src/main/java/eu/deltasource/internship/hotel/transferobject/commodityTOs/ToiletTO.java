@@ -4,4 +4,8 @@ public class ToiletTO extends AbstractCommodityTO {
 	public ToiletTO(){
 		super();
 	}
+	public ToiletTO(int id){
+		super();
+		setId(id);
+	}
 }

@@ -8,14 +8,17 @@ public class BedTO extends AbstractCommodityTO {
 	public BedTO() {
 		super();
 	}
-	public BedTO(BedType bedType){
+
+	public BedTO(BedType bedType, int id) {
 		this();
 		setBedType(bedType);
+		setId(id);
 	}
 
 	public BedType getBedType() {
 		return bedType;
 	}
+
 	public int getSize() {
 		return bedType.getSize();
 	}
