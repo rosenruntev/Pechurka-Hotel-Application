@@ -1,4 +1,4 @@
-package eu.deltasource.internship.hotel.transferobject;
+package eu.deltasource.internship.hotel.trasferObjects;
 
 import java.time.LocalDate;
 

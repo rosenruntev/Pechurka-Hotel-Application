@@ -1,26 +1,15 @@
-package eu.deltasource.internship.hotel.controller;
+package eu.deltasource.internship.hotel.controllers;
 
 import eu.deltasource.internship.hotel.domain.Booking;
-import eu.deltasource.internship.hotel.domain.Gender;
-import eu.deltasource.internship.hotel.domain.Guest;
-import eu.deltasource.internship.hotel.domain.Room;
-import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
-import eu.deltasource.internship.hotel.domain.commodity.Bed;
-import eu.deltasource.internship.hotel.domain.commodity.BedType;
-import eu.deltasource.internship.hotel.repository.GuestRepository;
-import eu.deltasource.internship.hotel.repository.RoomRepository;
 import eu.deltasource.internship.hotel.service.BookingService;
-import eu.deltasource.internship.hotel.transferobject.BookingTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import eu.deltasource.internship.hotel.trasferObjects.BookingTO;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
