@@ -7,12 +7,9 @@ import eu.deltasource.internship.hotel.domain.Room;
 import eu.deltasource.internship.hotel.domain.commodity.AbstractCommodity;
 import eu.deltasource.internship.hotel.domain.commodity.Bed;
 import eu.deltasource.internship.hotel.domain.commodity.BedType;
-import eu.deltasource.internship.hotel.repository.BookingRepository;
 import eu.deltasource.internship.hotel.repository.GuestRepository;
 import eu.deltasource.internship.hotel.repository.RoomRepository;
 import eu.deltasource.internship.hotel.service.BookingService;
-import eu.deltasource.internship.hotel.service.GuestService;
-import eu.deltasource.internship.hotel.service.RoomService;
 import eu.deltasource.internship.hotel.transferobject.BookingTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,12 +28,12 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping(value = "/bookings")
 public class BookingController {
 
+	@Autowired
 	private BookingService bookingService;
 
 	@RequestMapping(method = POST)
-	public void createBooking(@RequestBody Booking booking) {
-		bookingService.createBooking(booking.getGuestId(), booking.getNumberOfPeople(),
-			booking.getFrom(), booking.getTo());
+	public void createBooking(@RequestBody BookingTO bookingTO) {
+		bookingService.createBooking(bookingTO);
 	}
 
 	@RequestMapping(method = GET)
